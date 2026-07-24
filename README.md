@@ -17,7 +17,7 @@
 ## Files in this folder
 - index.html
 - styles.css
-- app.js
+- app.jsx
 - manifest.json
 - README.md
 
