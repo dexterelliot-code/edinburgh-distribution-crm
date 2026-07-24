@@ -1,47 +1,42 @@
-# Edinburgh Distribution CRM V4 — GitHub Pages Edition
+# Edinburgh Distribution OS V5
 
-A premium static CRM for building a Scottish technical sales and distribution agency.
+A polished GitHub Pages-compatible business operating system for Scottish technical sales representation.
 
-## V4 features
+## Included
 
-- Command Centre with pipeline, weighted forecast and commission KPIs
+- Command Centre with live KPIs
+- Readiness score
 - Drag-and-drop ten-stage deal pipeline
-- Manufacturer Intelligence profiles and opportunity scoring
-- Outreach Centre with manual status funnel and activity history
-- Contact directory
-- Proposal Studio with browser Print / Save as PDF
-- Tasks and follow-up management
-- Document register for secure external links and file metadata
+- Weighted commission forecasting in GBP
+- Manufacturer Intelligence profiles
+- Outreach composer with editable templates
+- Outreach history and response stages
+- Contacts directory
+- Proposal Studio with Print / Save as PDF
+- Tasks and follow-ups
+- Document Vault records
+- Analytics and Scottish opportunity map
 - Global search
-- Business profile settings
 - Dark mode
-- JSON backup and restore
-- Mobile-friendly layout
+- Local backup and restore
+- Mobile support
 
-## Important limitations
+## Install on GitHub Pages
 
-This GitHub Pages edition stores data in the current browser only. It cannot reliably provide:
+Replace these five files in the repository root:
 
-- real email sending or open tracking;
-- automatic reply tracking;
-- confidential cloud file uploads;
-- multi-device synchronisation;
-- multi-user accounts.
+- index.html
+- styles.css
+- app.js
+- manifest.json
+- README.md
 
-Those features need a secure cloud backend in a later release.
+Commit the changes, wait for GitHub Pages to deploy, then open:
 
-## Install
+https://dexterelliot-code.github.io/edinburgh-distribution-crm/index.html?v=5
 
-Replace the repository-root files with:
+Use Ctrl + Shift + R if your browser shows an older version.
 
-- `index.html`
-- `styles.css`
-- `app.js`
-- `manifest.json`
-- `README.md`
+## Data
 
-Commit the upload, wait for GitHub Pages to deploy, then open:
-
-`https://dexterelliot-code.github.io/edinburgh-distribution-crm/index.html?v=4`
-
-The `?v=4` query helps bypass older cached files.
+Data is stored in the browser using localStorage. Export backups regularly, particularly before replacing website files or moving to another device.

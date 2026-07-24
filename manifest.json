@@ -1,9 +1,9 @@
 {
-  "name": "Edinburgh Distribution CRM V4",
-  "short_name": "ED CRM V4",
-  "start_url": "./index.html?v=4",
+  "name": "Edinburgh Distribution OS V5",
+  "short_name": "ED OS V5",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f3f6fa",
-  "theme_color": "#07111f",
-  "description": "A premium local-first CRM for Scottish technical manufacturer representation."
+  "background_color": "#f4f7fb",
+  "theme_color": "#0f172a",
+  "description": "A premium Scottish technical sales and distribution operating system."
 }
