@@ -1,32 +1,23 @@
-# Edinburgh Distribution CRM V3 — GitHub Pages Edition
+# Edinburgh Distribution CRM V3.1 — GitHub Pages Edition
 
-This version uses plain HTML, CSS and JavaScript, so it works directly on GitHub Pages.
+## New in this version
+- Manufacturers research database
+- Opportunity scoring
+- Scottish market opportunity notes
+- Public sales / channel contact fields
+- Email template library with copy button
+- Starter manufacturers and contacts
+- Existing pipeline, deals, contacts, activity and dashboard features retained
 
-## Features
-- Drag-and-drop ten-stage sales pipeline
-- Deal records
-- Pipeline value and projected commission
-- Win rate and average deal value
-- Contacts
-- Activity log
-- Follow-up dates
-- Search and filtering
-- Dark mode
-- Backup import/export
-- Mobile-friendly layout
-
-## Replace the current files
-
-Delete the current repository files and upload these five files:
-
+## Upload
+Replace the five files in the repository root with:
 - index.html
 - styles.css
 - app.js
 - manifest.json
 - README.md
 
-Important: remove `app.jsx`. This version uses `app.js`.
+Then commit and open:
+https://dexterelliot-code.github.io/edinburgh-distribution-crm/index.html?v=31
 
-Commit the changes. GitHub Pages should update automatically within a few minutes.
-
-Your records remain stored in the browser, so export backups regularly.
+Existing browser data is preserved. The new manufacturer and template sections are added automatically.

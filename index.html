@@ -19,7 +19,9 @@
         <button class="nav-btn active" data-view="dashboard">Dashboard</button>
         <button class="nav-btn" data-view="pipeline">Pipeline</button>
         <button class="nav-btn" data-view="deals">Deals</button>
+        <button class="nav-btn" data-view="manufacturers">Manufacturers</button>
         <button class="nav-btn" data-view="contacts">Contacts</button>
+        <button class="nav-btn" data-view="templates">Email Templates</button>
         <button class="nav-btn" data-view="activity">Activity</button>
         <button class="nav-btn" data-view="settings">Settings</button>
       </nav>
@@ -70,12 +72,28 @@
           <div id="dealsTable" class="panel table-wrap"></div>
         </section>
 
+        <section class="view" id="view-manufacturers">
+          <div class="toolbar">
+            <input id="manufacturerSearch" type="search" placeholder="Search manufacturers, sectors or countries…" />
+            <button id="addManufacturerBtn" class="primary-btn">Add manufacturer</button>
+          </div>
+          <div id="manufacturersGrid" class="manufacturer-grid"></div>
+        </section>
+
         <section class="view" id="view-contacts">
           <div class="toolbar">
             <input id="contactSearch" type="search" placeholder="Search contacts…" />
             <button id="addContactBtn" class="primary-btn">Add contact</button>
           </div>
           <div id="contactsTable" class="panel table-wrap"></div>
+        </section>
+
+        <section class="view" id="view-templates">
+          <div class="toolbar">
+            <input id="templateSearch" type="search" placeholder="Search email templates…" />
+            <button id="addTemplateBtn" class="primary-btn">Add template</button>
+          </div>
+          <div id="templatesGrid" class="manufacturer-grid"></div>
         </section>
 
         <section class="view" id="view-activity">
@@ -127,4 +145,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-

@@ -1,6 +1,6 @@
 {
-  "name": "Edinburgh Distribution CRM V3",
-  "short_name": "ED CRM V3",
+  "name": "Edinburgh Distribution CRM V3.1",
+  "short_name": "ED CRM 3.1",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f5f7fb",
