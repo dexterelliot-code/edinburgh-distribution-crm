@@ -1,219 +1,96 @@
+const STORAGE_KEY="edinburgh_distribution_crm_v4";
 const STAGES=["Lead Identified","Researching","Initial Outreach","Follow-up 1","Discovery Meeting","Proposal Sent","Negotiation","Exclusive Agreement","Won","Lost"];
-const STORAGE_KEY="edinburgh_distribution_crm_v3_plain";
-const starterData={
- deals:[
-  {id:uid(),company:"Youibot Robotics",country:"China",title:"Scottish robotics distribution agreement",value:75000,commission:15,stage:"Lead Identified",priority:9,followup:"",owner:"Dylan",notes:"Target industrial, logistics and inspection automation opportunities in Scotland."},
-  {id:uid(),company:"MCA Process",country:"France",title:"Scottish food automation representation",value:65000,commission:12,stage:"Researching",priority:8,followup:"",owner:"Dylan",notes:"Relevant to Scottish food and drink manufacturers."},
-  {id:uid(),company:"ICA Packaging Machines",country:"Italy",title:"Packaging machinery agency",value:90000,commission:12,stage:"Initial Outreach",priority:9,followup:"",owner:"Dylan",notes:"Target food, coffee, pet food and dry-goods producers."},
-  {id:uid(),company:"Veo Technologies",country:"Denmark",title:"Scottish grassroots football partnership",value:30000,commission:10,stage:"Researching",priority:8,followup:"",owner:"Dylan",notes:"Potential venue, club and league sales partnership."}
- ],
+const OUTREACH_STATUSES=["Not Contacted","Email Sent","Follow-up Due","Replied","Meeting Booked","Proposal Sent"];
+const MANUFACTURER_STATUSES=["Priority Target","Researching","Ready to Contact","Contacted","In Discussion","On Hold","Partner"];
+const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);
+const today=()=>new Date().toISOString().slice(0,10);
+const plusDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
+const demo={
+ business:{name:"Edinburgh Distribution",owner:"Dylan Keddie",location:"Edinburgh, Scotland",email:"dexterelliot@gmail.com",phone:"+44 7760 491 772",website:"",territory:"Scotland",defaultCommission:12},
  manufacturers:[
-  {id:uid(),name:"Youibot Robotics",country:"China",sector:"Industrial robotics and autonomous mobile robots",website:"https://www.youibot.com",email:"chenguyu@youibot.com",contact:"Chenguyu / Channel Cooperation",status:"Priority target",score:92,opportunity:"Scottish manufacturing, logistics, energy and inspection sites.",research:"Public channel-cooperation contact identified. Position the pitch around local representation, demonstrations and access to Scottish industrial prospects."},
-  {id:uid(),name:"ICA Packaging Machines",country:"Italy",sector:"Automatic packaging machinery",website:"https://www.icaspa.it/en/",email:"com@icaspa.it",contact:"Export Sales Department",status:"Priority target",score:90,opportunity:"Food, drink, coffee, pet food and dry-product manufacturers across Scotland.",research:"Export sales contact is public. Strong match for Scotland's food and drink sector and a commission-based regional agency proposition."},
-  {id:uid(),name:"Veo Technologies",country:"Denmark",sector:"AI sports cameras and video analysis",website:"https://www.veo.co",email:"",contact:"Sales team via booking form",status:"Warm target",score:86,opportunity:"Grassroots clubs, football centres, schools and universities.",research:"Use the official sales-call form and lead with direct Edinburgh venue access, grassroots football knowledge and local installation support."},
-  {id:uid(),name:"MCA Process",country:"France",sector:"Food processing and production automation",website:"https://www.mca-process.com",email:"",contact:"Export or business development team",status:"Researching",score:78,opportunity:"Scottish food processors seeking production automation.",research:"Identify the export sales decision-maker and verify whether the UK or Scotland already has an agent."},
-  {id:uid(),name:"Pixellot",country:"Israel",sector:"Automated sports production",website:"https://www.pixellot.tv",email:"",contact:"Partnerships or sales team",status:"Researching",score:80,opportunity:"Football centres, clubs, governing bodies and multi-pitch venues.",research:"Assess channel-partner availability and whether local installation and sales coverage could complement its direct model."},
-  {id:uid(),name:"Spiideo",country:"Sweden",sector:"Automated sports video and analysis",website:"https://www.spiideo.com",email:"",contact:"Sales or partnerships team",status:"Researching",score:79,opportunity:"Performance clubs, academies and venues needing automated production.",research:"Pitch Scottish market development, venue introductions and first-line relationship management."}
+  {id:uid(),name:"Youibot Robotics",country:"China",hq:"Shenzhen",sector:"Industrial robotics",products:"Autonomous mobile robots, inspection robots and logistics automation",website:"https://www.youibot.com",status:"Priority Target",score:92,ukCoverage:"To verify",scotlandCoverage:"No dedicated Scottish presence identified",contactRoute:"Channel cooperation team",email:"chenguyu@youibot.com",decisionMaker:"Channel Cooperation",marketFit:"Scottish manufacturing, logistics, energy and inspection facilities.",competitors:"MiR, OTTO Motors and other AMR suppliers",risks:"Technical support expectations and local demonstration capability.",nextAction:"Send a tailored channel-partner introduction.",notes:"Lead with local prospecting, demonstrations and access to industrial prospects."},
+  {id:uid(),name:"ICA Packaging Machines",country:"Italy",hq:"Bologna",sector:"Packaging machinery",products:"Automatic packaging systems for food, coffee, pet food and dry products",website:"https://www.icaspa.it/en/",status:"Ready to Contact",score:90,ukCoverage:"To verify",scotlandCoverage:"No dedicated Scottish presence identified",contactRoute:"Export Sales Department",email:"com@icaspa.it",decisionMaker:"Export Sales Director",marketFit:"Scotland's food, drink, coffee, pet-food and dry-goods producers.",competitors:"European packaging machinery suppliers",risks:"Capital-equipment sales cycle and servicing requirements.",nextAction:"Send agency proposal and request territory discussion.",notes:"Strong fit with Scotland's food and drink sector."},
+  {id:uid(),name:"Veo Technologies",country:"Denmark",hq:"Copenhagen",sector:"Sports technology",products:"AI sports cameras, recording and analysis platform",website:"https://www.veo.co",status:"Researching",score:87,ukCoverage:"Direct sales present",scotlandCoverage:"Local partnership potential to verify",contactRoute:"Official sales and partnership route",email:"",decisionMaker:"Partnerships / UK Sales",marketFit:"Grassroots football clubs, schools, universities and five-a-side venues.",competitors:"Pixellot, Spiideo and Trace",risks:"Existing direct UK sales model may limit distributor structure.",nextAction:"Pitch venue acquisition and local market development.",notes:"Use Edinburgh football background and venue relationships."},
+  {id:uid(),name:"MCA Process",country:"France",hq:"Quimper",sector:"Food processing automation",products:"Production and process automation for food manufacturers",website:"https://www.mca-process.com",status:"Researching",score:81,ukCoverage:"To verify",scotlandCoverage:"Unknown",contactRoute:"Export or business development team",email:"",decisionMaker:"Export Sales Manager",marketFit:"Scottish food processors seeking production efficiency.",competitors:"Food automation integrators",risks:"Complex project qualification and engineering support.",nextAction:"Identify export decision-maker and UK channel position.",notes:"Build a target list of Scottish processors before outreach."},
+  {id:uid(),name:"Pixellot",country:"Israel",hq:"Petah Tikva",sector:"Sports production technology",products:"Automated sports cameras and broadcast production",website:"https://www.pixellot.tv",status:"Researching",score:80,ukCoverage:"Direct and partner coverage to verify",scotlandCoverage:"Potential gap in venue-level representation",contactRoute:"Sales / partnerships",email:"",decisionMaker:"Regional Partnerships",marketFit:"Football centres, clubs, leagues and multi-pitch venues.",competitors:"Veo and Spiideo",risks:"Enterprise orientation may require larger initial accounts.",nextAction:"Assess channel-partner model and Scottish venue fit.",notes:"Focus on multi-pitch operators and governing bodies."},
+  {id:uid(),name:"Spiideo",country:"Sweden",hq:"Malmö",sector:"Sports video and analytics",products:"Automated sports production, analysis and streaming",website:"https://www.spiideo.com",status:"Researching",score:79,ukCoverage:"To verify",scotlandCoverage:"Unknown",contactRoute:"Sales / partnerships",email:"",decisionMaker:"Regional Sales",marketFit:"Performance clubs, academies, universities and venues.",competitors:"Veo and Pixellot",risks:"Premium positioning and existing club contracts.",nextAction:"Research Scottish customer footprint.",notes:"Pitch market mapping and local relationship development."}
+ ],
+ deals:[
+  {id:uid(),manufacturer:"Youibot Robotics",title:"Scottish robotics representation",stage:"Lead Identified",value:75000,commission:15,probability:15,priority:9,followup:plusDays(2),owner:"Dylan",notes:"Initial channel discussion target."},
+  {id:uid(),manufacturer:"ICA Packaging Machines",title:"Scottish packaging machinery agency",stage:"Initial Outreach",value:90000,commission:12,probability:25,priority:9,followup:plusDays(1),owner:"Dylan",notes:"Prepare food and drink target accounts."},
+  {id:uid(),manufacturer:"Veo Technologies",title:"Grassroots football market-development partnership",stage:"Researching",value:35000,commission:10,probability:20,priority:8,followup:plusDays(4),owner:"Dylan",notes:"Lead with venue access and local sales support."},
+  {id:uid(),manufacturer:"MCA Process",title:"Scottish food automation representation",stage:"Researching",value:65000,commission:12,probability:15,priority:8,followup:plusDays(5),owner:"Dylan",notes:"Identify export manager."}
  ],
  contacts:[
-  {id:uid(),name:"Chenguyu",company:"Youibot Robotics",role:"Product Enquiries and Channel Cooperation",email:"chenguyu@youibot.com",phone:"",linkedin:"",notes:"Public contact listed for product enquiries and channel cooperation."},
-  {id:uid(),name:"Export Sales Department",company:"ICA Packaging Machines",role:"International Sales",email:"com@icaspa.it",phone:"+39 051 6017 900",linkedin:"",notes:"Public export sales contact."}
+  {id:uid(),name:"Channel Cooperation",manufacturer:"Youibot Robotics",role:"Product Enquiries and Channel Cooperation",email:"chenguyu@youibot.com",phone:"",linkedin:"",influence:"Decision maker",notes:"Public channel contact."},
+  {id:uid(),name:"Export Sales Department",manufacturer:"ICA Packaging Machines",role:"International Sales",email:"com@icaspa.it",phone:"+39 051 6017 900",linkedin:"",influence:"Decision maker",notes:"Public export sales route."}
+ ],
+ outreach:[
+  {id:uid(),manufacturer:"ICA Packaging Machines",contact:"Export Sales Department",channel:"Email",status:"Email Sent",date:today(),nextFollowup:plusDays(4),subject:"Scottish market representation proposal",summary:"Initial agency introduction prepared for export sales.",notes:"Tailor around Scottish food and drink manufacturers."},
+  {id:uid(),manufacturer:"Youibot Robotics",contact:"Channel Cooperation",channel:"Research",status:"Not Contacted",date:today(),nextFollowup:plusDays(2),subject:"",summary:"Public channel-cooperation contact identified.",notes:"Prepare robotics market-entry pitch."}
+ ],
+ proposals:[
+  {id:uid(),title:"Scottish Market Representation Proposal",manufacturer:"ICA Packaging Machines",status:"Draft",date:today(),commission:"12% on completed sales",term:"Initial 90-day market-development trial",marketOpportunity:"Scottish food, drink, coffee, pet-food and dry-goods manufacturers seeking reliable packaging automation.",services:"Target-account research; direct prospecting; qualification; demonstrations; local follow-up; weekly pipeline reporting.",targets:"Food and drink manufacturers across Edinburgh, Glasgow, Central Belt, Aberdeen and wider Scotland.",nextSteps:"Agree territory, product training, pricing support, lead ownership and commission terms."}
+ ],
+ tasks:[
+  {id:uid(),title:"Prepare Youibot introduction email",manufacturer:"Youibot Robotics",due:plusDays(2),priority:"High",status:"Open",type:"Outreach",notes:"Use manufacturer-specific Scottish applications."},
+  {id:uid(),title:"Build 20-account food producer list",manufacturer:"ICA Packaging Machines",due:plusDays(3),priority:"High",status:"Open",type:"Research",notes:"Include contact role and likely packaging requirement."},
+  {id:uid(),title:"Verify Veo Scottish channel position",manufacturer:"Veo Technologies",due:plusDays(4),priority:"Medium",status:"Open",type:"Research",notes:"Check direct sales, reseller and venue partnership routes."}
+ ],
+ documents:[
+  {id:uid(),name:"Scottish Market Representation Deck",manufacturer:"General",category:"Proposal",url:"",version:"Draft 1",date:today(),notes:"Core presentation for overseas manufacturers."},
+  {id:uid(),name:"ICA Product Catalogue",manufacturer:"ICA Packaging Machines",category:"Catalogue",url:"https://www.icaspa.it/en/",version:"Website",date:today(),notes:"Link to current manufacturer materials."}
  ],
  templates:[
-  {id:uid(),name:"Initial distributor approach",subject:"Scottish market representation proposal — {{company}}",body:"Hello {{contact}},\n\nMy name is Dylan Keddie and I am based in Edinburgh. I am building a focused sales and market-development operation representing overseas technical manufacturers across Scotland.\n\nI believe {{company}} has a strong opportunity in the Scottish market, particularly within {{sector}}. I can provide local prospecting, venue and customer introductions, product demonstrations, sales follow-up and ongoing account development without the cost of establishing a full local office.\n\nI would like to discuss a commission-based agency or distribution arrangement for Scotland. I can also prepare an initial target-account list and market-entry plan before our first call.\n\nWould you be open to a short introductory conversation next week?\n\nKind regards,\nDylan Keddie\nEdinburgh, Scotland"},
-  {id:uid(),name:"Follow-up after no reply",subject:"Following up — Scottish representation for {{company}}",body:"Hello {{contact}},\n\nI wanted to follow up on my note regarding representing {{company}} in Scotland.\n\nMy proposal is straightforward: I would identify and approach suitable Scottish customers, develop the early-stage sales pipeline and act as a local commercial point of contact on a commission-led basis.\n\nI believe the strongest starting opportunities are {{opportunity}}.\n\nWould a 15-minute call be possible to establish whether Scotland is currently covered and whether you are open to a regional partner?\n\nKind regards,\nDylan Keddie"},
-  {id:uid(),name:"Post-meeting proposal",subject:"Next steps for Scotland — {{company}}",body:"Hello {{contact}},\n\nThank you for speaking with me. Based on our discussion, I propose starting with a focused 90-day Scottish market-development trial.\n\nThe trial would include:\n• a defined target-account list;\n• direct outreach and qualification;\n• arranged demonstrations or discovery calls;\n• weekly pipeline reporting;\n• agreed commission on completed sales.\n\nThe initial focus would be {{opportunity}}.\n\nI have attached/outlined the proposed targets and would welcome your comments on territory, pricing support, training and commission structure.\n\nKind regards,\nDylan Keddie"}
+  {id:uid(),name:"Initial distributor approach",subject:"Scottish market representation proposal — {{company}}",body:"Hello {{contact}},\n\nMy name is Dylan Keddie and I am based in Edinburgh. I am building a focused sales and market-development operation representing overseas technical manufacturers across Scotland.\n\nI believe {{company}} has a strong opportunity in the Scottish market, particularly within {{sector}}. I can provide local prospecting, customer introductions, demonstrations, sales follow-up and ongoing account development without the cost of establishing a full local office.\n\nI would like to discuss a commission-based agency or distribution arrangement for Scotland. Would you be open to a short introductory conversation next week?\n\nKind regards,\nDylan Keddie\nEdinburgh, Scotland"},
+  {id:uid(),name:"No-reply follow-up",subject:"Following up — Scottish representation for {{company}}",body:"Hello {{contact}},\n\nI wanted to follow up on my note regarding representing {{company}} in Scotland.\n\nMy proposal is straightforward: I would identify suitable Scottish customers, develop the early-stage pipeline and act as a local commercial point of contact on a commission-led basis.\n\nWould a 15-minute call be possible to establish whether Scotland is currently covered and whether you are open to a regional partner?\n\nKind regards,\nDylan Keddie"},
+  {id:uid(),name:"Post-meeting 90-day plan",subject:"Next steps for Scotland — {{company}}",body:"Hello {{contact}},\n\nThank you for speaking with me. Based on our discussion, I propose starting with a focused 90-day Scottish market-development trial.\n\nThe trial would include a defined target-account list, direct outreach and qualification, arranged demonstrations, weekly pipeline reporting and agreed commission on completed sales.\n\nI would welcome your comments on territory, training, pricing support and commission structure.\n\nKind regards,\nDylan Keddie"}
  ],
- activities:[]
-}
-let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||JSON.stringify(starterData));
-let currentType=null,currentId=null,dragId=null;
-state.manufacturers=state.manufacturers||JSON.parse(JSON.stringify(starterData.manufacturers));
-state.templates=state.templates||JSON.parse(JSON.stringify(starterData.templates));
-state.contacts=state.contacts||[];
-state.activities=state.activities||[];
-
-
-function uid(){return crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2)}
-function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));renderAll()}
-function money(v){return new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP",maximumFractionDigits:0}).format(Number(v)||0)}
-function esc(v=""){return String(v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
-function byId(id){return document.getElementById(id)}
-function today(){return new Date().toISOString().slice(0,10)}
-
-document.querySelectorAll(".nav-btn").forEach(btn=>btn.addEventListener("click",()=>switchView(btn.dataset.view)));
-byId("menuBtn").onclick=()=>byId("sidebar").classList.toggle("open");
-byId("themeBtn").onclick=()=>{document.body.classList.toggle("dark");localStorage.setItem("crm_v3_plain_theme",document.body.classList.contains("dark")?"dark":"light")};
-if(localStorage.getItem("crm_v3_plain_theme")==="dark")document.body.classList.add("dark");
-
-function switchView(view){
- document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
- byId("view-"+view).classList.add("active");
- document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
- byId("pageTitle").textContent=document.querySelector(`[data-view="${view}"]`).textContent;
- byId("sidebar").classList.remove("open");
-}
-
+ activity:[{id:uid(),date:today(),type:"System",manufacturer:"General",summary:"CRM V4 initialised with starter intelligence and workflow records."}]
+};
+let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null")||structuredClone(demo);
+for(const key of ["manufacturers","deals","contacts","outreach","proposals","tasks","documents","templates","activity"]) state[key]=state[key]||[];
+state.business=state.business||structuredClone(demo.business);
+let editType=null,editId=null,selectedProposalId=state.proposals[0]?.id||null,dragDealId=null;
+const $=id=>document.getElementById(id);
+const esc=(v="")=>String(v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const money=v=>new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP",maximumFractionDigits:0}).format(Number(v)||0);
+const fmtDate=v=>v?new Intl.DateTimeFormat("en-GB",{day:"2-digit",month:"short",year:"numeric"}).format(new Date(v+"T12:00:00")):"—";
+const save=()=>{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));renderAll()};
+const manufacturerNames=()=>state.manufacturers.map(x=>x.name).sort();
+function jump(view){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));$("view-"+view).classList.add("active");document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===view));$("pageTitle").textContent=document.querySelector(`[data-view="${view}"]`).textContent;$("sidebar").classList.remove("open")}
+document.querySelectorAll(".nav-item").forEach(b=>b.onclick=()=>jump(b.dataset.view));document.querySelectorAll("[data-jump]").forEach(b=>b.onclick=()=>jump(b.dataset.jump));$("menuButton").onclick=()=>$("sidebar").classList.toggle("open");$("themeToggle").onclick=()=>{document.body.classList.toggle("dark");localStorage.setItem("edcrm-theme",document.body.classList.contains("dark")?"dark":"light")};if(localStorage.getItem("edcrm-theme")==="dark")document.body.classList.add("dark");
 const schemas={
- deal:[
-  ["company","Company","text",true],["country","Country","text"],["title","Deal title","text",true],
-  ["stage","Stage","stage"],["value","Deal value (£)","number"],["commission","Commission (%)","number"],
-  ["priority","Priority (1–10)","number"],["followup","Next follow-up","date"],["owner","Owner","text"],
-  ["notes","Notes","textarea"]
- ],
- manufacturer:[
-  ["name","Manufacturer name","text",true],["country","Country","text"],["sector","Sector / products","text"],
-  ["website","Website","url"],["email","Sales / partner email","email"],["contact","Contact or department","text"],
-  ["status","Status","text"],["score","Opportunity score (1–100)","number"],
-  ["opportunity","Scottish opportunity","textarea"],["research","Research notes","textarea"]
- ],
- contact:[
-  ["name","Contact name","text",true],["company","Company","text"],["role","Job title","text"],
-  ["email","Email","email"],["phone","Phone","tel"],["linkedin","LinkedIn","url"],["notes","Notes","textarea"]
- ],
- template:[
-  ["name","Template name","text",true],["subject","Email subject","text",true],["body","Email body","textarea"]
- ],
- activity:[
-  ["type","Activity type","activityType"],["company","Company","text"],["date","Date","date",true],
-  ["summary","Summary","text",true],["notes","Notes","textarea"]
- ]
+ deal:[["manufacturer","Manufacturer","manufacturer",true],["title","Opportunity title","text",true],["stage","Stage","stage"],["value","Potential deal value (£)","number"],["commission","Commission (%)","number"],["probability","Win probability (%)","number"],["priority","Priority (1–10)","number"],["followup","Next follow-up","date"],["owner","Owner","text"],["notes","Notes","textarea"]],
+ manufacturer:[["name","Company name","text",true],["country","Country","text"],["hq","Headquarters","text"],["sector","Sector","text"],["products","Products / technology","textarea"],["website","Website","url"],["status","Status","manufacturerStatus"],["score","Opportunity score (1–100)","number"],["ukCoverage","UK coverage","text"],["scotlandCoverage","Scottish coverage","text"],["contactRoute","Best contact route","text"],["email","Public email","email"],["decisionMaker","Likely decision-maker","text"],["marketFit","Scottish market fit","textarea"],["competitors","Competitors","textarea"],["risks","Risks / barriers","textarea"],["nextAction","Next recommended action","textarea"],["notes","Research notes","textarea"]],
+ contact:[["name","Name","text",true],["manufacturer","Manufacturer","manufacturer"],["role","Role","text"],["email","Email","email"],["phone","Phone","tel"],["linkedin","LinkedIn URL","url"],["influence","Influence","text"],["notes","Notes","textarea"]],
+ outreach:[["manufacturer","Manufacturer","manufacturer",true],["contact","Contact","text"],["channel","Channel","outreachChannel"],["status","Status","outreachStatus"],["date","Activity date","date"],["nextFollowup","Next follow-up","date"],["subject","Subject","text"],["summary","Summary","textarea",true],["notes","Notes","textarea"]],
+ proposal:[["title","Proposal title","text",true],["manufacturer","Manufacturer","manufacturer",true],["status","Status","proposalStatus"],["date","Date","date"],["commission","Commission model","text"],["term","Initial term","text"],["marketOpportunity","Market opportunity","textarea"],["services","Your services","textarea"],["targets","Initial target market","textarea"],["nextSteps","Proposed next steps","textarea"]],
+ task:[["title","Task","text",true],["manufacturer","Manufacturer","manufacturer"],["due","Due date","date"],["priority","Priority","taskPriority"],["status","Status","taskStatus"],["type","Task type","text"],["notes","Notes","textarea"]],
+ document:[["name","Document name","text",true],["manufacturer","Manufacturer","manufacturer"],["category","Category","documentCategory"],["url","Secure link / website URL","url"],["version","Version","text"],["date","Date","date"],["notes","Notes","textarea"]]
 };
-
-function openDialog(type,id=null){
- currentType=type;currentId=id;
- const list=state[type+"s"],record=id?list.find(x=>x.id===id):defaultRecord(type);
- byId("dialogTitle").textContent=(id?"Edit ":"Add ")+type;
- byId("deleteBtn").classList.toggle("hidden",!id);
- byId("formFields").innerHTML=schemas[type].map(([key,label,input,required])=>{
-  const val=record[key]??"";
-  if(input==="stage")return `<label>${label}<select name="${key}">${STAGES.map(s=>`<option ${s===val?"selected":""}>${s}</option>`).join("")}</select></label>`;
-  if(input==="activityType")return `<label>${label}<select name="${key}">${["Call","Email","Meeting","Note","Task"].map(s=>`<option ${s===val?"selected":""}>${s}</option>`).join("")}</select></label>`;
-  if(input==="textarea")return `<label class="full">${label}<textarea name="${key}" rows="5">${esc(val)}</textarea></label>`;
-  return `<label>${label}<input name="${key}" type="${input}" value="${esc(val)}" ${required?"required":""}></label>`;
- }).join("");
- byId("recordDialog").showModal();
-}
-function defaultRecord(type){
- if(type==="deal")return {id:uid(),company:"",country:"",title:"",stage:STAGES[0],value:0,commission:15,priority:5,followup:"",owner:"Dylan",notes:""};
- if(type==="manufacturer")return {id:uid(),name:"",country:"",sector:"",website:"",email:"",contact:"",status:"Researching",score:50,opportunity:"",research:""};
- if(type==="contact")return {id:uid(),name:"",company:"",role:"",email:"",phone:"",linkedin:"",notes:""};
- if(type==="template")return {id:uid(),name:"",subject:"",body:""};
- return {id:uid(),type:"Call",company:"",date:today(),summary:"",notes:""};
-}
-byId("recordForm").onsubmit=e=>{
- e.preventDefault();const fd=new FormData(e.target),record={id:currentId||uid()};
- schemas[currentType].forEach(([key])=>record[key]=fd.get(key)||"");
- ["value","commission","priority"].forEach(k=>{if(k in record)record[k]=Number(record[k])||0});
- const list=state[currentType+"s"],i=list.findIndex(x=>x.id===record.id);
- if(i>=0)list[i]=record;else list.unshift(record);
- byId("recordDialog").close();save();
-};
-byId("closeDialog").onclick=byId("cancelBtn").onclick=()=>byId("recordDialog").close();
-byId("deleteBtn").onclick=()=>{if(confirm("Delete this record?")){state[currentType+"s"]=state[currentType+"s"].filter(x=>x.id!==currentId);byId("recordDialog").close();save()}};
-byId("addDealBtn").onclick=()=>openDialog("deal");
-byId("addManufacturerBtn").onclick=()=>openDialog("manufacturer");
-byId("addContactBtn").onclick=()=>openDialog("contact");
-byId("addTemplateBtn").onclick=()=>openDialog("template");
-byId("addActivityBtn").onclick=()=>openDialog("activity");
-
-window.editDeal=id=>openDialog("deal",id);
-window.editManufacturer=id=>openDialog("manufacturer",id);
-window.editContact=id=>openDialog("contact",id);
-window.editTemplate=id=>openDialog("template",id);
-window.editActivity=id=>openDialog("activity",id);
-
-function renderDashboard(){
- const active=state.deals.filter(d=>!["Won","Lost"].includes(d.stage));
- const pipeline=active.reduce((s,d)=>s+Number(d.value||0),0);
- const commission=active.reduce((s,d)=>s+Number(d.value||0)*Number(d.commission||0)/100,0);
- const won=state.deals.filter(d=>d.stage==="Won").length,lost=state.deals.filter(d=>d.stage==="Lost").length;
- const winRate=(won+lost)?Math.round(won/(won+lost)*100):0;
- const average=state.deals.length?state.deals.reduce((s,d)=>s+Number(d.value||0),0)/state.deals.length:0;
- const due=state.deals.filter(d=>d.followup===today()).length;
- byId("stats").innerHTML=[
-  ["Active deals",active.length],["Pipeline value",money(pipeline)],["Projected commission",money(commission)],
-  ["Due today",due],["Win rate",winRate+"%"],["Average deal",money(average)]
- ].map(x=>`<article class="stat"><span>${x[0]}</span><strong>${x[1]}</strong></article>`).join("");
- byId("stageSummary").innerHTML=STAGES.map(s=>`<div class="row"><span>${s}</span><strong>${state.deals.filter(d=>d.stage===s).length}</strong></div>`).join("");
- const upcoming=[...state.deals].filter(d=>d.followup).sort((a,b)=>a.followup.localeCompare(b.followup)).slice(0,6);
- byId("followupSummary").innerHTML=upcoming.length?upcoming.map(d=>`<div class="row"><div><strong>${esc(d.company)}</strong><div class="muted">${esc(d.followup)} · ${esc(d.stage)}</div></div><button class="secondary-btn" onclick="editDeal('${d.id}')">Open</button></div>`).join(""):`<p class="muted">No follow-ups scheduled.</p>`;
- const top=[...state.deals].sort((a,b)=>b.value-a.value).slice(0,8);
- byId("topDeals").innerHTML=dealTable(top);
-}
-function dealTable(deals){
- return `<table><thead><tr><th>Company</th><th>Deal</th><th>Stage</th><th>Value</th><th>Commission</th><th></th></tr></thead><tbody>${deals.map(d=>`<tr><td>${esc(d.company)}</td><td>${esc(d.title)}</td><td>${esc(d.stage)}</td><td>${money(d.value)}</td><td>${money(d.value*d.commission/100)}</td><td><button class="secondary-btn" onclick="editDeal('${d.id}')">Open</button></td></tr>`).join("")}</tbody></table>`;
-}
-function renderPipeline(){
- const q=byId("pipelineSearch").value.toLowerCase();
- const deals=state.deals.filter(d=>[d.company,d.country,d.title,d.stage].join(" ").toLowerCase().includes(q));
- byId("kanban").innerHTML=STAGES.map(stage=>`<section class="column" data-stage="${stage}">
-  <h3>${stage} (${deals.filter(d=>d.stage===stage).length})</h3>
-  ${deals.filter(d=>d.stage===stage).map(d=>`<article class="deal-card" draggable="true" data-id="${d.id}" ondblclick="editDeal('${d.id}')">
-   <div style="display:flex;justify-content:space-between;gap:8px"><div><h4>${esc(d.company)}</h4><div class="sub">${esc(d.country)}</div></div><span class="badge">${d.priority}/10</span></div>
-   <p>${esc(d.title)}</p>
-   <div class="deal-meta"><div><span>Value</span><strong>${money(d.value)}</strong></div><div><span>Commission</span><strong>${money(d.value*d.commission/100)}</strong></div><div><span>Owner</span><strong>${esc(d.owner||"—")}</strong></div><div><span>Follow-up</span><strong>${esc(d.followup||"—")}</strong></div></div>
-  </article>`).join("")}
- </section>`).join("");
- document.querySelectorAll(".deal-card").forEach(card=>card.addEventListener("dragstart",()=>dragId=card.dataset.id));
- document.querySelectorAll(".column").forEach(col=>{
-  col.addEventListener("dragover",e=>{e.preventDefault();col.classList.add("drag-over")});
-  col.addEventListener("dragleave",()=>col.classList.remove("drag-over"));
-  col.addEventListener("drop",()=>{col.classList.remove("drag-over");const d=state.deals.find(x=>x.id===dragId);if(d){d.stage=col.dataset.stage;save()}dragId=null});
- });
-}
-function renderDeals(){
- const q=byId("dealSearch").value.toLowerCase(),stage=byId("stageFilter").value;
- const deals=state.deals.filter(d=>[d.company,d.country,d.title,d.stage].join(" ").toLowerCase().includes(q)&&(!stage||d.stage===stage));
- byId("dealsTable").innerHTML=dealTable(deals);
-}
-
-function renderManufacturers(){
- const q=byId("manufacturerSearch").value.toLowerCase();
- const items=state.manufacturers.filter(m=>[m.name,m.country,m.sector,m.status,m.opportunity].join(" ").toLowerCase().includes(q));
- byId("manufacturersGrid").innerHTML=items.map(m=>`<article class="manufacturer-card">
-  <div style="display:flex;justify-content:space-between;gap:10px"><div><h3>${esc(m.name)}</h3><div class="muted">${esc(m.country)} · ${esc(m.sector)}</div></div><span class="badge">${Number(m.score)||0}/100</span></div>
-  <p><strong>${esc(m.status||"Researching")}</strong></p>
-  <div class="research-box"><strong>Scottish opportunity</strong><br>${esc(m.opportunity||"Not added yet.")}</div>
-  <div class="research-box"><strong>Research notes</strong><br>${esc(m.research||"Not added yet.")}</div>
-  <p class="muted">${esc(m.contact||"No contact yet")} ${m.email?`· ${esc(m.email)}`:""}</p>
-  <div class="card-actions">
-   <button class="secondary-btn" onclick="editManufacturer('${m.id}')">Edit</button>
-   ${m.website?`<button class="secondary-btn" onclick="window.open('${esc(m.website)}','_blank')">Website</button>`:""}
-   ${m.email?`<button class="primary-btn" onclick="location.href='mailto:${esc(m.email)}'">Email</button>`:""}
-  </div>
- </article>`).join("") || `<p class="muted">No manufacturers found.</p>`;
-}
-function renderTemplates(){
- const q=byId("templateSearch").value.toLowerCase();
- const items=state.templates.filter(t=>[t.name,t.subject,t.body].join(" ").toLowerCase().includes(q));
- byId("templatesGrid").innerHTML=items.map(t=>`<article class="manufacturer-card">
-  <h3>${esc(t.name)}</h3><p><strong>Subject:</strong> ${esc(t.subject)}</p>
-  <div class="template-body">${esc(t.body)}</div>
-  <div class="card-actions"><button class="secondary-btn" onclick="editTemplate('${t.id}')">Edit</button><button class="primary-btn" onclick="navigator.clipboard.writeText(${JSON.stringify("")}+state.templates.find(x=>x.id==='${t.id}').body).then(()=>alert('Template copied'))">Copy body</button></div>
- </article>`).join("") || `<p class="muted">No templates found.</p>`;
-}
-function renderContacts(){
- const q=byId("contactSearch").value.toLowerCase();
- const contacts=state.contacts.filter(c=>[c.name,c.company,c.role,c.email].join(" ").toLowerCase().includes(q));
- byId("contactsTable").innerHTML=`<table><thead><tr><th>Name</th><th>Company</th><th>Role</th><th>Email</th><th></th></tr></thead><tbody>${contacts.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.company)}</td><td>${esc(c.role)}</td><td>${esc(c.email)}</td><td><button class="secondary-btn" onclick="editContact('${c.id}')">Open</button></td></tr>`).join("")}</tbody></table>`;
-}
-function renderActivity(){
- const q=byId("activitySearch").value.toLowerCase();
- const items=state.activities.filter(a=>[a.type,a.company,a.summary,a.notes].join(" ").toLowerCase().includes(q)).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
- byId("activityList").innerHTML=items.length?items.map(a=>`<div class="row"><div><strong>${esc(a.type)} — ${esc(a.summary)}</strong><div class="muted">${esc(a.date)} · ${esc(a.company||"No company")}</div><div>${esc(a.notes||"")}</div></div><button class="secondary-btn" onclick="editActivity('${a.id}')">Open</button></div>`).join(""):`<p class="muted">No activity logged.</p>`;
-}
-function renderAll(){renderDashboard();renderPipeline();renderDeals();renderManufacturers();renderContacts();renderTemplates();renderActivity()}
-byId("stageFilter").innerHTML='<option value="">All stages</option>'+STAGES.map(s=>`<option>${s}</option>`).join("");
-["pipelineSearch","dealSearch","stageFilter","manufacturerSearch","contactSearch","templateSearch","activitySearch"].forEach(id=>byId(id).addEventListener("input",renderAll));
-
-function exportBackup(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");
- a.href=URL.createObjectURL(blob);a.download="edinburgh-distribution-crm-v3-backup.json";a.click();URL.revokeObjectURL(a.href);
-}
-byId("exportBtn").onclick=byId("exportBtnSettings").onclick=exportBackup;
-byId("importInput").onchange=async e=>{try{state=JSON.parse(await e.target.files[0].text());save();alert("Backup imported.")}catch{alert("The backup file could not be read.")}e.target.value=""};
-byId("loadStarterBtn").onclick=()=>{if(confirm("Load the three starter deals?")){state.deals=[...starterData.deals,...state.deals];save()}};
-byId("clearBtn").onclick=()=>{if(confirm("Delete all CRM data in this browser?")){state={deals:[],manufacturers:[],contacts:[],templates:[],activities:[]};save()}};
-
-renderAll();
+function defaultRecord(type){const common={id:uid()};return type==="deal"?{...common,manufacturer:"",title:"",stage:STAGES[0],value:0,commission:state.business.defaultCommission||12,probability:10,priority:5,followup:"",owner:state.business.owner||"Dylan",notes:""}:type==="manufacturer"?{...common,name:"",country:"",hq:"",sector:"",products:"",website:"",status:"Researching",score:50,ukCoverage:"",scotlandCoverage:"",contactRoute:"",email:"",decisionMaker:"",marketFit:"",competitors:"",risks:"",nextAction:"",notes:""}:type==="contact"?{...common,name:"",manufacturer:"",role:"",email:"",phone:"",linkedin:"",influence:"",notes:""}:type==="outreach"?{...common,manufacturer:"",contact:"",channel:"Email",status:"Email Sent",date:today(),nextFollowup:plusDays(4),subject:"",summary:"",notes:""}:type==="proposal"?{...common,title:"Scottish Market Representation Proposal",manufacturer:"",status:"Draft",date:today(),commission:`${state.business.defaultCommission||12}% on completed sales`,term:"Initial 90-day market-development trial",marketOpportunity:"",services:"Target-account research; direct prospecting; qualification; demonstrations; local follow-up; weekly pipeline reporting.",targets:"",nextSteps:"Agree territory, training, pricing support, lead ownership and commission terms."}:type==="task"?{...common,title:"",manufacturer:"",due:plusDays(2),priority:"Medium",status:"Open",type:"Follow-up",notes:""}:{...common,name:"",manufacturer:"",category:"Catalogue",url:"",version:"",date:today(),notes:""}}
+function options(values,current){return values.map(v=>`<option ${v===current?"selected":""}>${esc(v)}</option>`).join("")}
+function fieldHTML(key,label,type,value,required){let input;if(type==="textarea")input=`<textarea name="${key}" rows="4" ${required?"required":""}>${esc(value)}</textarea>`;else if(type==="manufacturer")input=`<select name="${key}"><option value="">Select manufacturer</option>${options(manufacturerNames(),value)}</select>`;else if(type==="stage")input=`<select name="${key}">${options(STAGES,value)}</select>`;else if(type==="manufacturerStatus")input=`<select name="${key}">${options(MANUFACTURER_STATUSES,value)}</select>`;else if(type==="outreachStatus")input=`<select name="${key}">${options(OUTREACH_STATUSES,value)}</select>`;else if(type==="outreachChannel")input=`<select name="${key}">${options(["Email","Call","LinkedIn","Meeting","Research","Other"],value)}</select>`;else if(type==="proposalStatus")input=`<select name="${key}">${options(["Draft","Ready","Sent","Accepted","Declined"],value)}</select>`;else if(type==="taskPriority")input=`<select name="${key}">${options(["Low","Medium","High","Critical"],value)}</select>`;else if(type==="taskStatus")input=`<select name="${key}">${options(["Open","In Progress","Done"],value)}</select>`;else if(type==="documentCategory")input=`<select name="${key}">${options(["Catalogue","Price List","Proposal","Contract","Technical Specification","Image","Video","Other"],value)}</select>`;else input=`<input name="${key}" type="${type}" value="${esc(value)}" ${required?"required":""}>`;return `<label class="${type==="textarea"?"full":""}">${label}${input}</label>`}
+function openEditor(type,id=null){editType=type;editId=id;const item=id?state[type+"s"].find(x=>x.id===id):defaultRecord(type);$("editorTitle").textContent=(id?"Edit ":"New ")+type;$("editorDelete").classList.toggle("hidden",!id);$("editorFields").innerHTML=schemas[type].map(([k,l,t,r])=>fieldHTML(k,l,t,item[k]??"",r)).join("");$("editorDialog").showModal()}
+document.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>openEditor(b.dataset.add));$("quickAdd").onclick=()=>openEditor("manufacturer");$("editorClose").onclick=$("editorCancel").onclick=()=>$("editorDialog").close();$("editorForm").onsubmit=e=>{e.preventDefault();const fd=new FormData(e.target),item={id:editId||uid()};schemas[editType].forEach(([k])=>item[k]=fd.get(k)||"");["value","commission","probability","priority","score"].forEach(k=>{if(k in item)item[k]=Number(item[k])||0});const list=state[editType+"s"],idx=list.findIndex(x=>x.id===item.id);if(idx>=0)list[idx]=item;else list.unshift(item);if(editType==="proposal")selectedProposalId=item.id;state.activity.unshift({id:uid(),date:today(),type:idx>=0?"Updated":"Created",manufacturer:item.manufacturer||item.name||"General",summary:`${editType} ${idx>=0?"updated":"created"}: ${item.title||item.name||item.summary||"record"}`});$("editorDialog").close();save()};$("editorDelete").onclick=()=>{if(confirm("Delete this record?")){state[editType+"s"]=state[editType+"s"].filter(x=>x.id!==editId);$("editorDialog").close();save()}};
+window.editRecord=(type,id)=>openEditor(type,id);
+function renderCommand(){const openDeals=state.deals.filter(d=>!["Won","Lost"].includes(d.stage)),pipeline=openDeals.reduce((s,d)=>s+Number(d.value),0),weighted=openDeals.reduce((s,d)=>s+Number(d.value)*(Number(d.probability)||0)/100,0),commission=openDeals.reduce((s,d)=>s+Number(d.value)*Number(d.commission)/100*(Number(d.probability)||0)/100,0),contacted=new Set(state.outreach.filter(o=>o.status!=="Not Contacted").map(o=>o.manufacturer)).size,replies=state.outreach.filter(o=>["Replied","Meeting Booked","Proposal Sent"].includes(o.status)).length,overdue=state.tasks.filter(t=>t.status!=="Done"&&t.due&&t.due<today()).length;const kpis=[["Pipeline value",money(pipeline),`${openDeals.length} active deals`],["Weighted forecast",money(weighted),"Probability adjusted"],["Forecast commission",money(commission),"Probability adjusted"],["Manufacturers",state.manufacturers.length,`${state.manufacturers.filter(m=>m.score>=85).length} priority targets`],["Companies contacted",contacted,`${replies} positive responses`],["Overdue tasks",overdue,overdue?"Needs attention":"All under control"]];$("kpiGrid").innerHTML=kpis.map(x=>`<div class="kpi"><span>${x[0]}</span><strong>${x[1]}</strong><small>${x[2]}</small></div>`).join("");const readiness=Math.min(100,Math.round((Math.min(state.manufacturers.length,10)*3+Math.min(state.contacts.length,10)*2+Math.min(state.outreach.length,10)*3+Math.min(state.proposals.length,5)*4+Math.min(state.tasks.length,10)*1)));$("readinessScore").textContent=readiness+"%";$("readinessText").textContent=readiness>=75?"Ready for structured outreach":readiness>=45?"Strong foundation — keep building":"Add intelligence and outreach records";const max=Math.max(1,...STAGES.map(s=>state.deals.filter(d=>d.stage===s).reduce((a,d)=>a+Number(d.value),0)));$("pipelineBars").innerHTML=STAGES.filter(s=>state.deals.some(d=>d.stage===s)).map(s=>{const v=state.deals.filter(d=>d.stage===s).reduce((a,d)=>a+Number(d.value),0);return `<div class="bar-row"><span>${s}</span><div class="bar-track"><div class="bar-fill" style="width:${v/max*100}%"></div></div><strong>${money(v)}</strong></div>`}).join("");const actions=[...state.tasks.filter(t=>t.status!=="Done")].sort((a,b)=>(a.due||"9999").localeCompare(b.due||"9999")).slice(0,6);$("priorityActions").innerHTML=actions.length?actions.map(t=>`<div class="item-row"><div><strong>${esc(t.title)}</strong><div class="muted">${esc(t.manufacturer)} · ${fmtDate(t.due)}</div></div><span class="badge ${t.due<today()?"red":t.priority==="High"?"amber":""}">${esc(t.priority)}</span></div>`).join(""):`<p class="muted">No open tasks.</p>`;const funnelData=[["Targets",state.manufacturers.length],["Contacted",contacted],["Replies",replies],["Meetings",state.outreach.filter(o=>o.status==="Meeting Booked").length],["Proposals",state.proposals.filter(p=>["Sent","Accepted"].includes(p.status)).length],["Partners",state.manufacturers.filter(m=>m.status==="Partner").length]];$("funnel").innerHTML=funnelData.map(x=>`<div class="funnel-step"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join("");$("topOpportunities").innerHTML=manufacturerTable([...state.manufacturers].sort((a,b)=>b.score-a.score).slice(0,6));$("recentActivity").innerHTML=timelineHTML(state.activity.slice(0,6))}
+function manufacturerTable(items){return `<table><thead><tr><th>Manufacturer</th><th>Country</th><th>Sector</th><th>Status</th><th>Score</th><th>Next action</th></tr></thead><tbody>${items.map(m=>`<tr onclick="editRecord('manufacturer','${m.id}')"><td><strong>${esc(m.name)}</strong></td><td>${esc(m.country)}</td><td>${esc(m.sector)}</td><td>${esc(m.status)}</td><td><span class="badge ${m.score>=85?"green":m.score<70?"red":""}">${m.score}/100</span></td><td>${esc(m.nextAction||"—")}</td></tr>`).join("")}</tbody></table>`}
+function renderPipeline(){const q=$("pipelineSearch").value.toLowerCase(),items=state.deals.filter(d=>Object.values(d).join(" ").toLowerCase().includes(q));$("kanban").innerHTML=STAGES.map(stage=>`<section class="kanban-column" data-stage="${stage}"><div class="column-title"><span>${stage}</span><span>${items.filter(d=>d.stage===stage).length}</span></div>${items.filter(d=>d.stage===stage).map(d=>`<article class="deal-card" draggable="true" data-id="${d.id}" ondblclick="editRecord('deal','${d.id}')"><div class="card-title"><div><h4>${esc(d.manufacturer)}</h4><span class="muted">${esc(d.title)}</span></div><span class="badge">${d.priority}/10</span></div><div class="deal-grid"><div><span>VALUE</span><strong>${money(d.value)}</strong></div><div><span>COMMISSION</span><strong>${money(d.value*d.commission/100)}</strong></div><div><span>PROBABILITY</span><strong>${d.probability}%</strong></div><div><span>FOLLOW-UP</span><strong>${fmtDate(d.followup)}</strong></div></div></article>`).join("")}</section>`).join("");document.querySelectorAll(".deal-card").forEach(c=>c.ondragstart=()=>dragDealId=c.dataset.id);document.querySelectorAll(".kanban-column").forEach(c=>{c.ondragover=e=>{e.preventDefault();c.classList.add("dragover")};c.ondragleave=()=>c.classList.remove("dragover");c.ondrop=()=>{c.classList.remove("dragover");const deal=state.deals.find(d=>d.id===dragDealId);if(deal){deal.stage=c.dataset.stage;save()}}})}
+function renderManufacturers(){const q=$("manufacturerSearch").value.toLowerCase(),status=$("manufacturerStatus").value,country=$("manufacturerCountry").value,items=state.manufacturers.filter(m=>Object.values(m).join(" ").toLowerCase().includes(q)&&(!status||m.status===status)&&(!country||m.country===country));$("manufacturerStats").innerHTML=[["Total targets",state.manufacturers.length],["Priority score 85+",state.manufacturers.filter(m=>m.score>=85).length],["Ready to contact",state.manufacturers.filter(m=>m.status==="Ready to Contact").length],["Partners",state.manufacturers.filter(m=>m.status==="Partner").length]].map(x=>`<div class="mini-stat"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join("");$("manufacturerGrid").innerHTML=items.map(m=>`<article class="manufacturer-card"><div class="card-title"><div><h3>${esc(m.name)}</h3><div class="muted">${esc(m.country)} · ${esc(m.sector)}</div></div><span class="badge ${m.score>=85?"green":m.score<70?"red":""}">${m.score}/100</span></div><p><span class="badge">${esc(m.status)}</span></p><div class="intel-block"><strong>Products</strong>${esc(m.products||"Not recorded")}</div><div class="intel-block"><strong>Scottish market fit</strong>${esc(m.marketFit||"Not assessed")}</div><div class="intel-block"><strong>Next action</strong>${esc(m.nextAction||"Not set")}</div><div class="card-actions"><button class="secondary-btn" onclick="editRecord('manufacturer','${m.id}')">Open profile</button>${m.website?`<button class="secondary-btn" onclick="window.open('${esc(m.website)}','_blank')">Website</button>`:""}${m.email?`<button class="primary-btn" onclick="location.href='mailto:${esc(m.email)}'">Email</button>`:""}</div></article>`).join("")||`<div class="empty-state">No manufacturers match these filters.</div>`}
+function renderOutreach(){const q=$("outreachSearch").value.toLowerCase(),filter=$("outreachStatus").value,items=state.outreach.filter(o=>Object.values(o).join(" ").toLowerCase().includes(q)&&(!filter||o.status===filter));$("outreachBoard").innerHTML=OUTREACH_STATUSES.map(status=>`<section class="outreach-column"><strong>${status}</strong>${items.filter(o=>o.status===status).map(o=>`<article class="outreach-card" onclick="editRecord('outreach','${o.id}')"><strong>${esc(o.manufacturer)}</strong><p>${esc(o.summary)}</p><small class="muted">${fmtDate(o.date)} · ${esc(o.channel)}</small></article>`).join("")}</section>`).join("");$("outreachTimeline").innerHTML=timelineHTML([...items].sort((a,b)=>(b.date||"").localeCompare(a.date||"")),true)}
+function timelineHTML(items,outreach=false){return items.length?items.map(x=>`<div class="timeline-item"><strong>${esc(outreach?x.manufacturer:x.type+" · "+x.manufacturer)}</strong><p>${esc(outreach?x.summary:x.summary)}</p><small class="muted">${fmtDate(x.date)}${outreach?` · ${esc(x.status)}`:""}</small></div>`).join(""):`<p class="muted">No activity recorded.</p>`}
+function renderContacts(){const q=$("contactSearch").value.toLowerCase(),items=state.contacts.filter(c=>Object.values(c).join(" ").toLowerCase().includes(q));$("contactsTable").innerHTML=`<table><thead><tr><th>Name</th><th>Manufacturer</th><th>Role</th><th>Email</th><th>Influence</th><th></th></tr></thead><tbody>${items.map(c=>`<tr><td><strong>${esc(c.name)}</strong></td><td>${esc(c.manufacturer)}</td><td>${esc(c.role)}</td><td>${esc(c.email)}</td><td>${esc(c.influence)}</td><td><button class="secondary-btn" onclick="editRecord('contact','${c.id}')">Open</button></td></tr>`).join("")}</tbody></table>`}
+function renderProposals(){const q=$("proposalSearch").value.toLowerCase(),items=state.proposals.filter(p=>Object.values(p).join(" ").toLowerCase().includes(q));$("proposalList").innerHTML=items.map(p=>`<div class="proposal-card"><div class="card-title"><div><strong>${esc(p.manufacturer)}</strong><div class="muted">${esc(p.title)}</div></div><span class="badge">${esc(p.status)}</span></div><div class="card-actions"><button class="secondary-btn" onclick="selectProposal('${p.id}')">Preview</button><button class="secondary-btn" onclick="editRecord('proposal','${p.id}')">Edit</button></div></div>`).join("")||`<p class="muted">No proposals yet.</p>`;renderProposalPreview()}
+window.selectProposal=id=>{selectedProposalId=id;renderProposalPreview()};function renderProposalPreview(){const p=state.proposals.find(x=>x.id===selectedProposalId);if(!p){$("proposalPreview").innerHTML='<div class="empty-state">Select or create a proposal to preview it.</div>';return}$("proposalPreview").innerHTML=`<div class="proposal-header"><p class="eyebrow">${esc(state.business.name.toUpperCase())}</p><h2>${esc(p.title)}</h2><p>Prepared for <strong>${esc(p.manufacturer)}</strong></p><p>${fmtDate(p.date)}</p></div><h3>Executive proposal</h3><p>${esc(state.business.name)} proposes to act as a focused market-development and sales representative for ${esc(p.manufacturer)} across ${esc(state.business.territory)}.</p><h3>Scottish market opportunity</h3><p>${esc(p.marketOpportunity||"To be completed.")}</p><h3>Services provided</h3><p>${esc(p.services||"To be completed.")}</p><h3>Initial target market</h3><p>${esc(p.targets||"To be completed.")}</p><h3>Commercial structure</h3><p><strong>Commission:</strong> ${esc(p.commission)}<br><strong>Initial term:</strong> ${esc(p.term)}</p><h3>Next steps</h3><p>${esc(p.nextSteps||"To be agreed.")}</p><hr><p><strong>${esc(state.business.owner)}</strong><br>${esc(state.business.location)}<br>${esc(state.business.email)} · ${esc(state.business.phone)}</p><div class="card-actions"><button class="primary-btn" onclick="window.print()">Print / Save as PDF</button></div>`}
+function renderTasks(){const q=$("taskSearch").value.toLowerCase(),f=$("taskFilter").value;let items=state.tasks.filter(t=>Object.values(t).join(" ").toLowerCase().includes(q));items=items.filter(t=>!f||(f==="overdue"&&t.status!=="Done"&&t.due<today())||(f==="today"&&t.status!=="Done"&&t.due===today())||(f==="open"&&t.status!=="Done")||(f==="done"&&t.status==="Done"));$("taskSummary").innerHTML=[["Open",state.tasks.filter(t=>t.status!=="Done").length],["Due today",state.tasks.filter(t=>t.status!=="Done"&&t.due===today()).length],["Overdue",state.tasks.filter(t=>t.status!=="Done"&&t.due<today()).length],["Completed",state.tasks.filter(t=>t.status==="Done").length]].map(x=>`<div class="mini-stat"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join("");$("taskList").innerHTML=[...items].sort((a,b)=>(a.due||"9999").localeCompare(b.due||"9999")).map(t=>`<div class="task-card ${t.status==="Done"?"done":""}"><input class="task-check" type="checkbox" ${t.status==="Done"?"checked":""} onchange="toggleTask('${t.id}')"><div><strong>${esc(t.title)}</strong><div class="muted">${esc(t.manufacturer)} · ${esc(t.type)} · Due ${fmtDate(t.due)}</div></div><div><span class="badge ${t.due<today()&&t.status!=="Done"?"red":t.priority==="High"?"amber":""}">${esc(t.priority)}</span> <button class="secondary-btn" onclick="editRecord('task','${t.id}')">Open</button></div></div>`).join("")||`<div class="empty-state">No tasks match this view.</div>`}window.toggleTask=id=>{const t=state.tasks.find(x=>x.id===id);t.status=t.status==="Done"?"Open":"Done";save()};
+function renderDocuments(){const q=$("documentSearch").value.toLowerCase(),items=state.documents.filter(d=>Object.values(d).join(" ").toLowerCase().includes(q));$("documentGrid").innerHTML=items.map(d=>`<article class="document-card"><div class="document-icon">▤</div><h3>${esc(d.name)}</h3><p class="muted">${esc(d.manufacturer)} · ${esc(d.category)}</p><div class="intel-block"><strong>Version / date</strong>${esc(d.version||"—")} · ${fmtDate(d.date)}</div><p>${esc(d.notes||"")}</p><div class="card-actions"><button class="secondary-btn" onclick="editRecord('document','${d.id}')">Edit</button>${d.url?`<button class="primary-btn" onclick="window.open('${esc(d.url)}','_blank')">Open link</button>`:""}</div></article>`).join("")||`<div class="empty-state">No documents registered.</div>`}
+function renderSettings(){const fields=[["name","Business name","text"],["owner","Owner","text"],["location","Location","text"],["email","Email","email"],["phone","Phone","text"],["website","Website","url"],["territory","Territory","text"],["defaultCommission","Default commission (%)","number"]];$("businessForm").innerHTML=fields.map(([k,l,t])=>`<label>${l}<input name="${k}" type="${t}" value="${esc(state.business[k]??"")}"></label>`).join("")+`<div class="full"><button class="primary-btn" type="submit">Save business profile</button></div>`}
+$("businessForm").onsubmit=e=>{e.preventDefault();const fd=new FormData(e.target);for(const [k,v] of fd.entries())state.business[k]=k==="defaultCommission"?Number(v):v;save()};
+function renderTemplates(){$("templateList").innerHTML=state.templates.map(t=>`<article class="template-card"><h3>${esc(t.name)}</h3><p><strong>Subject:</strong> ${esc(t.subject)}</p><div class="template-body">${esc(t.body)}</div><div class="card-actions"><button class="primary-btn" onclick="copyTemplate('${t.id}')">Copy template</button></div></article>`).join("")}window.copyTemplate=id=>{const t=state.templates.find(x=>x.id===id);navigator.clipboard.writeText(`Subject: ${t.subject}\n\n${t.body}`).then(()=>alert("Template copied to clipboard."))};$("openTemplates").onclick=()=>{$("templateDialog").showModal();renderTemplates()};$("templateClose").onclick=()=>$("templateDialog").close();
+function exportData(){const a=document.createElement("a"),blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});a.href=URL.createObjectURL(blob);a.download=`edinburgh-distribution-crm-v4-${today()}.json`;a.click();URL.revokeObjectURL(a.href)}$("quickExport").onclick=$("settingsExport").onclick=exportData;$("importFile").onchange=async e=>{try{state=JSON.parse(await e.target.files[0].text());save();alert("Backup imported.")}catch{alert("That backup could not be read.")}e.target.value=""};$("loadDemo").onclick=()=>{if(confirm("Replace current records with the V4 demonstration data?")){state=structuredClone(demo);selectedProposalId=state.proposals[0]?.id||null;save()}};$("clearData").onclick=()=>{if(confirm("Delete all CRM data stored in this browser?")){state={business:structuredClone(demo.business),manufacturers:[],deals:[],contacts:[],outreach:[],proposals:[],tasks:[],documents:[],templates:structuredClone(demo.templates),activity:[]};save()}};
+$("globalSearchBtn").onclick=()=>{$("searchDialog").showModal();$("globalSearch").focus()};$("searchClose").onclick=()=>$("searchDialog").close();$("globalSearch").oninput=e=>{const q=e.target.value.toLowerCase();if(!q){$("globalResults").innerHTML="";return}const groups=[["manufacturer",state.manufacturers,"name"],["deal",state.deals,"title"],["contact",state.contacts,"name"],["proposal",state.proposals,"title"],["task",state.tasks,"title"]];const results=[];groups.forEach(([type,list,label])=>list.filter(x=>Object.values(x).join(" ").toLowerCase().includes(q)).slice(0,5).forEach(x=>results.push({type,id:x.id,label:x[label],sub:x.manufacturer||x.country||""})));$("globalResults").innerHTML=results.map(r=>`<button class="item-row" onclick="document.getElementById('searchDialog').close();editRecord('${r.type}','${r.id}')"><div><strong>${esc(r.label)}</strong><div class="muted">${esc(r.type)} · ${esc(r.sub)}</div></div><span>Open →</span></button>`).join("")||`<p class="muted">No results.</p>`};
+function initFilters(){$("manufacturerStatus").innerHTML='<option value="">All statuses</option>'+options(MANUFACTURER_STATUSES,"");const countries=[...new Set(state.manufacturers.map(m=>m.country).filter(Boolean))].sort();$("manufacturerCountry").innerHTML='<option value="">All countries</option>'+options(countries,"");$("outreachStatus").innerHTML='<option value="">All statuses</option>'+options(OUTREACH_STATUSES,"")}
+function renderAll(){initFilters();renderCommand();renderPipeline();renderManufacturers();renderOutreach();renderContacts();renderProposals();renderTasks();renderDocuments();renderSettings()}
+["pipelineSearch","manufacturerSearch","manufacturerStatus","manufacturerCountry","outreachSearch","outreachStatus","contactSearch","proposalSearch","taskSearch","taskFilter","documentSearch"].forEach(id=>$(id).addEventListener("input",renderAll));renderAll();

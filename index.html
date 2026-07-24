@@ -1,147 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f172a" />
-  <title>Edinburgh Distribution CRM V3</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07111f">
+  <title>Edinburgh Distribution CRM V4</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">
-        <div class="brand-mark">ED</div>
-        <div><strong>Edinburgh Distribution</strong><small>Growth Partner CRM</small></div>
-      </div>
-      <nav id="nav">
-        <button class="nav-btn active" data-view="dashboard">Dashboard</button>
-        <button class="nav-btn" data-view="pipeline">Pipeline</button>
-        <button class="nav-btn" data-view="deals">Deals</button>
-        <button class="nav-btn" data-view="manufacturers">Manufacturers</button>
-        <button class="nav-btn" data-view="contacts">Contacts</button>
-        <button class="nav-btn" data-view="templates">Email Templates</button>
-        <button class="nav-btn" data-view="activity">Activity</button>
-        <button class="nav-btn" data-view="settings">Settings</button>
-      </nav>
-      <div class="sidebar-footer">
-        <button id="themeBtn" class="ghost-btn">Toggle dark mode</button>
-        <button id="exportBtn" class="ghost-btn">Export backup</button>
-      </div>
-    </aside>
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="brand-logo">ED</div><div><strong>Edinburgh Distribution</strong><small>Scottish Market Development</small></div></div>
+    <nav id="mainNav">
+      <button class="nav-item active" data-view="command">Command Centre</button>
+      <button class="nav-item" data-view="pipeline">Deal Pipeline</button>
+      <button class="nav-item" data-view="manufacturers">Manufacturer Intelligence</button>
+      <button class="nav-item" data-view="outreach">Outreach Centre</button>
+      <button class="nav-item" data-view="contacts">Contacts</button>
+      <button class="nav-item" data-view="proposals">Proposal Studio</button>
+      <button class="nav-item" data-view="tasks">Tasks & Follow-ups</button>
+      <button class="nav-item" data-view="documents">Document Vault</button>
+      <button class="nav-item" data-view="settings">Settings</button>
+    </nav>
+    <div class="side-actions">
+      <button class="side-btn" id="themeToggle">Toggle dark mode</button>
+      <button class="side-btn" id="quickExport">Export backup</button>
+    </div>
+  </aside>
 
-    <main class="main">
-      <header class="topbar">
-        <button id="menuBtn" class="icon-btn mobile-only">☰</button>
-        <div><p class="eyebrow">SCOTTISH TECHNICAL SALES</p><h1 id="pageTitle">Dashboard</h1></div>
-        <button id="addDealBtn" class="primary-btn">+ Add deal</button>
-      </header>
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn mobile-only" id="menuButton">☰</button>
+      <div><p class="eyebrow">EDINBURGH • SCOTLAND</p><h1 id="pageTitle">Command Centre</h1></div>
+      <div class="header-actions"><button class="secondary-btn" id="globalSearchBtn">Search</button><button class="primary-btn" id="quickAdd">+ New record</button></div>
+    </header>
 
-      <section class="content">
-        <section class="view active" id="view-dashboard">
-          <div class="stats" id="stats"></div>
-          <div class="dashboard-grid">
-            <article class="panel">
-              <h2>Deals by stage</h2>
-              <div id="stageSummary" class="stack"></div>
-            </article>
-            <article class="panel">
-              <h2>Upcoming follow-ups</h2>
-              <div id="followupSummary" class="stack"></div>
-            </article>
-            <article class="panel span-two">
-              <h2>Highest-value opportunities</h2>
-              <div id="topDeals" class="table-wrap"></div>
-            </article>
-          </div>
-        </section>
-
-        <section class="view" id="view-pipeline">
-          <div class="toolbar">
-            <input id="pipelineSearch" type="search" placeholder="Search pipeline…" />
-          </div>
-          <div class="kanban" id="kanban"></div>
-        </section>
-
-        <section class="view" id="view-deals">
-          <div class="toolbar">
-            <input id="dealSearch" type="search" placeholder="Search deals, companies or stages…" />
-            <select id="stageFilter"><option value="">All stages</option></select>
-          </div>
-          <div id="dealsTable" class="panel table-wrap"></div>
-        </section>
-
-        <section class="view" id="view-manufacturers">
-          <div class="toolbar">
-            <input id="manufacturerSearch" type="search" placeholder="Search manufacturers, sectors or countries…" />
-            <button id="addManufacturerBtn" class="primary-btn">Add manufacturer</button>
-          </div>
-          <div id="manufacturersGrid" class="manufacturer-grid"></div>
-        </section>
-
-        <section class="view" id="view-contacts">
-          <div class="toolbar">
-            <input id="contactSearch" type="search" placeholder="Search contacts…" />
-            <button id="addContactBtn" class="primary-btn">Add contact</button>
-          </div>
-          <div id="contactsTable" class="panel table-wrap"></div>
-        </section>
-
-        <section class="view" id="view-templates">
-          <div class="toolbar">
-            <input id="templateSearch" type="search" placeholder="Search email templates…" />
-            <button id="addTemplateBtn" class="primary-btn">Add template</button>
-          </div>
-          <div id="templatesGrid" class="manufacturer-grid"></div>
-        </section>
-
-        <section class="view" id="view-activity">
-          <div class="toolbar">
-            <input id="activitySearch" type="search" placeholder="Search activity…" />
-            <button id="addActivityBtn" class="primary-btn">Log activity</button>
-          </div>
-          <div id="activityList" class="stack"></div>
-        </section>
-
-        <section class="view" id="view-settings">
-          <div class="settings-grid">
-            <article class="panel">
-              <h2>Data management</h2>
-              <p class="muted">Your records are stored in this browser. Export backups regularly.</p>
-              <div class="button-stack">
-                <button id="exportBtnSettings" class="secondary-btn">Export backup</button>
-                <label class="secondary-btn file-label">Import backup<input id="importInput" type="file" accept=".json" hidden></label>
-                <button id="loadStarterBtn" class="secondary-btn">Load starter data</button>
-                <button id="clearBtn" class="danger-btn">Clear all data</button>
-              </div>
-            </article>
-            <article class="panel">
-              <h2>Current version</h2>
-              <p><strong>Version 3 — GitHub Pages edition</strong></p>
-              <p class="muted">Plain HTML, CSS and JavaScript. No React or build system required.</p>
-            </article>
-          </div>
-        </section>
+    <div class="workspace">
+      <section class="view active" id="view-command">
+        <div class="hero">
+          <div><p class="eyebrow light">SCOTTISH MARKET DEVELOPMENT</p><h2>Build the pipeline. Win the territory.</h2><p>Track manufacturers, outreach, proposals and projected commission in one operating system.</p></div>
+          <div class="hero-score"><span>Business readiness</span><strong id="readinessScore">0%</strong><small id="readinessText">Add records to build momentum</small></div>
+        </div>
+        <div class="kpi-grid" id="kpiGrid"></div>
+        <div class="dashboard-grid">
+          <article class="panel span-2"><div class="panel-head"><div><p class="eyebrow">PIPELINE</p><h3>Value by stage</h3></div><button class="text-btn" data-jump="pipeline">Open pipeline →</button></div><div id="pipelineBars" class="bar-chart"></div></article>
+          <article class="panel"><div class="panel-head"><div><p class="eyebrow">PRIORITIES</p><h3>Next actions</h3></div></div><div id="priorityActions" class="stack"></div></article>
+          <article class="panel"><div class="panel-head"><div><p class="eyebrow">OUTREACH</p><h3>Conversion funnel</h3></div></div><div id="funnel" class="funnel"></div></article>
+          <article class="panel span-2"><div class="panel-head"><div><p class="eyebrow">OPPORTUNITIES</p><h3>Highest-value manufacturers</h3></div><button class="text-btn" data-jump="manufacturers">View intelligence →</button></div><div id="topOpportunities" class="table-scroll"></div></article>
+          <article class="panel"><div class="panel-head"><div><p class="eyebrow">RECENT</p><h3>Activity</h3></div></div><div id="recentActivity" class="timeline compact"></div></article>
+        </div>
       </section>
-    </main>
-  </div>
 
-  <dialog id="recordDialog">
-    <form id="recordForm" class="dialog-card">
-      <div class="dialog-head">
-        <div><p class="eyebrow">CRM RECORD</p><h2 id="dialogTitle">Add record</h2></div>
-        <button type="button" id="closeDialog" class="icon-btn">×</button>
-      </div>
-      <div id="formFields" class="form-grid"></div>
-      <div class="dialog-actions">
-        <button type="button" id="deleteBtn" class="danger-btn hidden">Delete</button>
-        <button type="button" id="cancelBtn" class="secondary-btn">Cancel</button>
-        <button type="submit" class="primary-btn">Save</button>
-      </div>
-    </form>
-  </dialog>
+      <section class="view" id="view-pipeline">
+        <div class="section-tools"><div class="search-wrap"><input id="pipelineSearch" type="search" placeholder="Search deals…"></div><button class="primary-btn" data-add="deal">+ Add deal</button></div>
+        <div id="kanban" class="kanban"></div>
+      </section>
 
-  <script src="app.js"></script>
+      <section class="view" id="view-manufacturers">
+        <div class="section-tools multi"><input id="manufacturerSearch" type="search" placeholder="Search company, country, sector or product…"><select id="manufacturerStatus"><option value="">All statuses</option></select><select id="manufacturerCountry"><option value="">All countries</option></select><button class="primary-btn" data-add="manufacturer">+ Add manufacturer</button></div>
+        <div id="manufacturerStats" class="mini-stats"></div>
+        <div id="manufacturerGrid" class="card-grid"></div>
+      </section>
+
+      <section class="view" id="view-outreach">
+        <div class="section-tools multi"><input id="outreachSearch" type="search" placeholder="Search outreach…"><select id="outreachStatus"><option value="">All statuses</option></select><button class="secondary-btn" id="openTemplates">Email templates</button><button class="primary-btn" data-add="outreach">+ Log outreach</button></div>
+        <div id="outreachBoard" class="outreach-board"></div>
+        <div class="panel"><div class="panel-head"><div><p class="eyebrow">HISTORY</p><h3>Outreach activity</h3></div></div><div id="outreachTimeline" class="timeline"></div></div>
+      </section>
+
+      <section class="view" id="view-contacts">
+        <div class="section-tools"><input id="contactSearch" type="search" placeholder="Search contacts…"><button class="primary-btn" data-add="contact">+ Add contact</button></div>
+        <div id="contactsTable" class="panel table-scroll"></div>
+      </section>
+
+      <section class="view" id="view-proposals">
+        <div class="section-tools"><input id="proposalSearch" type="search" placeholder="Search proposals…"><button class="primary-btn" data-add="proposal">+ Create proposal</button></div>
+        <div class="proposal-layout"><div><div id="proposalList" class="stack"></div></div><article class="proposal-paper" id="proposalPreview"><div class="empty-state">Select or create a proposal to preview it.</div></article></div>
+      </section>
+
+      <section class="view" id="view-tasks">
+        <div class="section-tools multi"><input id="taskSearch" type="search" placeholder="Search tasks…"><select id="taskFilter"><option value="">All tasks</option><option value="overdue">Overdue</option><option value="today">Due today</option><option value="open">Open</option><option value="done">Completed</option></select><button class="primary-btn" data-add="task">+ Add task</button></div>
+        <div id="taskSummary" class="mini-stats"></div><div id="taskList" class="task-list"></div>
+      </section>
+
+      <section class="view" id="view-documents">
+        <div class="notice"><strong>Local document register:</strong> this GitHub Pages version records file details and links. It does not upload confidential files to a server.</div>
+        <div class="section-tools"><input id="documentSearch" type="search" placeholder="Search documents…"><button class="primary-btn" data-add="document">+ Register document</button></div>
+        <div id="documentGrid" class="card-grid"></div>
+      </section>
+
+      <section class="view" id="view-settings">
+        <div class="settings-grid">
+          <article class="panel"><p class="eyebrow">BUSINESS PROFILE</p><h3>Your details</h3><form id="businessForm" class="form-grid"></form></article>
+          <article class="panel"><p class="eyebrow">DATA</p><h3>Backup and restore</h3><p class="muted">Data is stored in this browser. Export a backup after important changes.</p><div class="button-stack"><button class="secondary-btn" id="settingsExport">Export JSON backup</button><label class="secondary-btn file-label">Import JSON backup<input id="importFile" type="file" accept="application/json" hidden></label><button class="secondary-btn" id="loadDemo">Restore V4 demo records</button><button class="danger-btn" id="clearData">Clear all CRM data</button></div></article>
+          <article class="panel"><p class="eyebrow">VERSION</p><h3>V4 GitHub Pages Edition</h3><p class="muted">Premium static CRM with local browser storage. Email sending, open tracking, cloud file storage and multi-device sync require a future secure backend.</p></article>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<dialog id="editorDialog"><form id="editorForm" class="dialog-card"><div class="dialog-head"><div><p class="eyebrow">EDIT RECORD</p><h2 id="editorTitle">New record</h2></div><button type="button" class="icon-btn" id="editorClose">×</button></div><div id="editorFields" class="form-grid"></div><div class="dialog-actions"><button type="button" class="danger-btn hidden" id="editorDelete">Delete</button><span class="spacer"></span><button type="button" class="secondary-btn" id="editorCancel">Cancel</button><button type="submit" class="primary-btn">Save record</button></div></form></dialog>
+
+<dialog id="templateDialog"><div class="dialog-card wide"><div class="dialog-head"><div><p class="eyebrow">OUTREACH LIBRARY</p><h2>Email templates</h2></div><button type="button" class="icon-btn" id="templateClose">×</button></div><div id="templateList" class="template-grid"></div></div></dialog>
+
+<dialog id="searchDialog"><div class="dialog-card"><div class="dialog-head"><div><p class="eyebrow">GLOBAL SEARCH</p><h2>Find anything</h2></div><button type="button" class="icon-btn" id="searchClose">×</button></div><input id="globalSearch" class="global-search" type="search" placeholder="Manufacturer, deal, contact, proposal or task…"><div id="globalResults" class="stack search-results"></div></div></dialog>
+
+<script src="app.js"></script>
 </body>
 </html>

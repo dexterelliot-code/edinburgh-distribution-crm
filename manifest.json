@@ -1,9 +1,9 @@
 {
-  "name": "Edinburgh Distribution CRM V3.1",
-  "short_name": "ED CRM 3.1",
-  "start_url": "./index.html",
+  "name": "Edinburgh Distribution CRM V4",
+  "short_name": "ED CRM V4",
+  "start_url": "./index.html?v=4",
   "display": "standalone",
-  "background_color": "#f5f7fb",
-  "theme_color": "#0f172a",
-  "description": "A mobile-friendly sales CRM for Scottish technical product representation."
+  "background_color": "#f3f6fa",
+  "theme_color": "#07111f",
+  "description": "A premium local-first CRM for Scottish technical manufacturer representation."
 }
