@@ -4,89 +4,70 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0f172a" />
-  <title>Edinburgh Distribution CRM</title>
+  <title>Edinburgh Distribution CRM V3</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app-shell">
+  <div class="app">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="brand-mark">ED</div>
-        <div>
-          <strong>Edinburgh Distribution</strong>
-          <small>Growth Partner CRM</small>
-        </div>
+        <div><strong>Edinburgh Distribution</strong><small>Growth Partner CRM</small></div>
       </div>
-
-      <nav class="nav-list">
-        <button class="nav-item active" data-view="dashboard">Dashboard</button>
-        <button class="nav-item" data-view="manufacturers">Manufacturers</button>
-        <button class="nav-item" data-view="pipeline">Pipeline</button>
-        <button class="nav-item" data-view="contacts">Contacts</button>
-        <button class="nav-item" data-view="calls">Call log</button>
-        <button class="nav-item" data-view="followups">Follow-ups</button>
-        <button class="nav-item" data-view="templates">Email templates</button>
-        <button class="nav-item" data-view="calculator">Commission calculator</button>
-        <button class="nav-item" data-view="settings">Settings</button>
+      <nav id="nav">
+        <button class="nav-btn active" data-view="dashboard">Dashboard</button>
+        <button class="nav-btn" data-view="pipeline">Pipeline</button>
+        <button class="nav-btn" data-view="deals">Deals</button>
+        <button class="nav-btn" data-view="contacts">Contacts</button>
+        <button class="nav-btn" data-view="activity">Activity</button>
+        <button class="nav-btn" data-view="settings">Settings</button>
       </nav>
-
       <div class="sidebar-footer">
-        <button id="themeToggle" class="ghost-btn">Toggle dark mode</button>
+        <button id="themeBtn" class="ghost-btn">Toggle dark mode</button>
+        <button id="exportBtn" class="ghost-btn">Export backup</button>
       </div>
     </aside>
 
-    <section class="main-shell">
+    <main class="main">
       <header class="topbar">
         <button id="menuBtn" class="icon-btn mobile-only">☰</button>
-        <div>
-          <p class="eyebrow">SCOTTISH TECHNICAL SALES</p>
-          <h1 id="viewTitle">Dashboard</h1>
-        </div>
-        <button id="quickAddBtn" class="primary-btn">+ Add</button>
+        <div><p class="eyebrow">SCOTTISH TECHNICAL SALES</p><h1 id="pageTitle">Dashboard</h1></div>
+        <button id="addDealBtn" class="primary-btn">+ Add deal</button>
       </header>
 
-      <main id="mainContent">
+      <section class="content">
         <section class="view active" id="view-dashboard">
-          <div class="stats-grid">
-            <article class="stat-card"><span>Total manufacturers</span><strong id="statManufacturers">0</strong></article>
-            <article class="stat-card"><span>Active opportunities</span><strong id="statActive">0</strong></article>
-            <article class="stat-card"><span>Follow-ups due</span><strong id="statFollowups">0</strong></article>
-            <article class="stat-card"><span>Pipeline value</span><strong id="statPipeline">£0</strong></article>
-          </div>
-
+          <div class="stats" id="stats"></div>
           <div class="dashboard-grid">
             <article class="panel">
-              <div class="panel-head"><h2>Pipeline summary</h2></div>
-              <div id="pipelineSummary" class="summary-list"></div>
+              <h2>Deals by stage</h2>
+              <div id="stageSummary" class="stack"></div>
             </article>
             <article class="panel">
-              <div class="panel-head"><h2>Upcoming follow-ups</h2></div>
-              <div id="dashboardFollowups" class="stack-list"></div>
+              <h2>Upcoming follow-ups</h2>
+              <div id="followupSummary" class="stack"></div>
             </article>
-            <article class="panel span-2">
-              <div class="panel-head"><h2>Priority manufacturers</h2></div>
-              <div id="priorityCompanies" class="table-wrap"></div>
+            <article class="panel span-two">
+              <h2>Highest-value opportunities</h2>
+              <div id="topDeals" class="table-wrap"></div>
             </article>
           </div>
-        </section>
-
-        <section class="view" id="view-manufacturers">
-          <div class="toolbar">
-            <input id="manufacturerSearch" type="search" placeholder="Search company, product, country…" />
-            <select id="countryFilter"><option value="">All countries</option></select>
-            <select id="statusFilter">
-              <option value="">All statuses</option>
-              <option>Researching</option><option>Contacted</option><option>Meeting</option>
-              <option>Negotiating</option><option>Won</option><option>Lost</option>
-            </select>
-            <button id="addManufacturerBtn" class="primary-btn">Add manufacturer</button>
-          </div>
-          <div id="manufacturerCards" class="card-grid"></div>
         </section>
 
         <section class="view" id="view-pipeline">
-          <div class="pipeline-board" id="pipelineBoard"></div>
+          <div class="toolbar">
+            <input id="pipelineSearch" type="search" placeholder="Search pipeline…" />
+          </div>
+          <div class="kanban" id="kanban"></div>
+        </section>
+
+        <section class="view" id="view-deals">
+          <div class="toolbar">
+            <input id="dealSearch" type="search" placeholder="Search deals, companies or stages…" />
+            <select id="stageFilter"><option value="">All stages</option></select>
+          </div>
+          <div id="dealsTable" class="panel table-wrap"></div>
         </section>
 
         <section class="view" id="view-contacts">
@@ -94,82 +75,55 @@
             <input id="contactSearch" type="search" placeholder="Search contacts…" />
             <button id="addContactBtn" class="primary-btn">Add contact</button>
           </div>
-          <div id="contactsTable" class="table-wrap"></div>
+          <div id="contactsTable" class="panel table-wrap"></div>
         </section>
 
-        <section class="view" id="view-calls">
+        <section class="view" id="view-activity">
           <div class="toolbar">
-            <input id="callSearch" type="search" placeholder="Search call notes…" />
-            <button id="addCallBtn" class="primary-btn">Log call</button>
+            <input id="activitySearch" type="search" placeholder="Search activity…" />
+            <button id="addActivityBtn" class="primary-btn">Log activity</button>
           </div>
-          <div id="callsList" class="stack-list"></div>
-        </section>
-
-        <section class="view" id="view-followups">
-          <div class="panel">
-            <div class="panel-head"><h2>Follow-up calendar</h2></div>
-            <div id="followupList" class="stack-list"></div>
-          </div>
-        </section>
-
-        <section class="view" id="view-templates">
-          <div class="toolbar">
-            <button id="addTemplateBtn" class="primary-btn">Add template</button>
-          </div>
-          <div id="templateCards" class="card-grid"></div>
-        </section>
-
-        <section class="view" id="view-calculator">
-          <div class="calculator-card">
-            <h2>Commission calculator</h2>
-            <label>Order value (£)<input id="calcOrder" type="number" min="0" value="50000" /></label>
-            <label>Commission rate (%)<input id="calcRate" type="number" min="0" step="0.1" value="15" /></label>
-            <label>Estimated costs (£)<input id="calcCosts" type="number" min="0" value="0" /></label>
-            <div class="calc-results">
-              <div><span>Gross commission</span><strong id="grossCommission">£7,500</strong></div>
-              <div><span>Net commission</span><strong id="netCommission">£7,500</strong></div>
-              <div><span>Monthly equivalent</span><strong id="monthlyCommission">£625</strong></div>
-            </div>
-          </div>
+          <div id="activityList" class="stack"></div>
         </section>
 
         <section class="view" id="view-settings">
           <div class="settings-grid">
             <article class="panel">
               <h2>Data management</h2>
-              <p class="muted">Export regular backups. This version stores data in your browser.</p>
+              <p class="muted">Your records are stored in this browser. Export backups regularly.</p>
               <div class="button-stack">
-                <button id="exportBtn" class="secondary-btn">Export CRM backup</button>
-                <label class="secondary-btn file-button">Import CRM backup<input id="importInput" type="file" accept=".json" hidden /></label>
-                <button id="seedBtn" class="secondary-btn">Load starter data</button>
-                <button id="clearAllBtn" class="danger-btn">Clear all data</button>
+                <button id="exportBtnSettings" class="secondary-btn">Export backup</button>
+                <label class="secondary-btn file-label">Import backup<input id="importInput" type="file" accept=".json" hidden></label>
+                <button id="loadStarterBtn" class="secondary-btn">Load starter data</button>
+                <button id="clearBtn" class="danger-btn">Clear all data</button>
               </div>
             </article>
             <article class="panel">
-              <h2>Cloud status</h2>
-              <p class="muted">Cloud syncing is not connected in this prototype. The interface is ready to connect to Supabase or Firebase later.</p>
+              <h2>Current version</h2>
+              <p><strong>Version 3 — GitHub Pages edition</strong></p>
+              <p class="muted">Plain HTML, CSS and JavaScript. No React or build system required.</p>
             </article>
           </div>
         </section>
-      </main>
-    </section>
+      </section>
+    </main>
   </div>
 
   <dialog id="recordDialog">
-    <form id="recordForm">
+    <form id="recordForm" class="dialog-card">
       <div class="dialog-head">
-        <div><p class="eyebrow">CRM RECORD</p><h2 id="recordDialogTitle">Add record</h2></div>
-        <button type="button" class="icon-btn" id="closeDialog">×</button>
+        <div><p class="eyebrow">CRM RECORD</p><h2 id="dialogTitle">Add record</h2></div>
+        <button type="button" id="closeDialog" class="icon-btn">×</button>
       </div>
-      <div id="dynamicFields" class="form-grid"></div>
+      <div id="formFields" class="form-grid"></div>
       <div class="dialog-actions">
-        <button type="button" id="deleteRecord" class="danger-btn hidden">Delete</button>
-        <button type="button" id="cancelDialog" class="secondary-btn">Cancel</button>
+        <button type="button" id="deleteBtn" class="danger-btn hidden">Delete</button>
+        <button type="button" id="cancelBtn" class="secondary-btn">Cancel</button>
         <button type="submit" class="primary-btn">Save</button>
       </div>
     </form>
   </dialog>
 
-  <script src="app.jsx"></script>
+  <script src="app.js"></script>
 </body>
 </html>

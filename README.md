@@ -1,28 +1,32 @@
-# Edinburgh Distribution CRM — Version 2
+# Edinburgh Distribution CRM V3 — GitHub Pages Edition
 
-## Included features
-- Mobile-first dashboard
-- Manufacturer database
-- Search and country/status filters
-- Kanban-style sales pipeline
-- Contacts database
-- Call log
-- Follow-up list
-- Email template library
-- Commission calculator
-- Light/dark mode
-- JSON backup import and export
-- Starter manufacturer records
+This version uses plain HTML, CSS and JavaScript, so it works directly on GitHub Pages.
 
-## Files in this folder
+## Features
+- Drag-and-drop ten-stage sales pipeline
+- Deal records
+- Pipeline value and projected commission
+- Win rate and average deal value
+- Contacts
+- Activity log
+- Follow-up dates
+- Search and filtering
+- Dark mode
+- Backup import/export
+- Mobile-friendly layout
+
+## Replace the current files
+
+Delete the current repository files and upload these five files:
+
 - index.html
 - styles.css
-- app.jsx
+- app.js
 - manifest.json
 - README.md
 
-## Publish with GitHub Pages
-Upload all five individual files to the root of a GitHub repository. Then enable GitHub Pages from the main branch and root folder.
+Important: remove `app.jsx`. This version uses `app.js`.
 
-## Important
-This prototype stores data in the browser on the device where it is used. Export backups regularly. Cloud syncing and login require a later Supabase or Firebase connection.
+Commit the changes. GitHub Pages should update automatically within a few minutes.
+
+Your records remain stored in the browser, so export backups regularly.
