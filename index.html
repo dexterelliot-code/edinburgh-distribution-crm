@@ -3,233 +3,351 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d1b2e" />
+  <meta name="description" content="Caledonia Technical Partners manufacturer outreach CRM." />
   <title>Caledonia Technical Partners CRM</title>
-  <meta name="description" content="Manufacturer outreach, email and proposal CRM for Caledonia Technical Partners." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="mark">CTP</div>
-      <div>
-        <strong>Caledonia</strong>
-        <span>Technical Partners</span>
-      </div>
-    </div>
-    <div class="top-actions">
-      <button class="secondary" id="exportDataBtn">Export Data</button>
-      <label class="secondary file-label">
-        Import Data
-        <input id="importDataInput" type="file" accept="application/json" />
-      </label>
-      <button class="primary" id="newCompanyBtn">+ New Company</button>
-    </div>
-  </header>
-
-  <main class="shell">
-    <section class="stats" id="stats"></section>
-
-    <section class="toolbar card">
-      <div class="search-wrap">
-        <input id="searchInput" type="search" placeholder="Search manufacturers, contacts, categories…" />
-      </div>
-      <select id="statusFilter">
-        <option value="">All stages</option>
-        <option>Research</option>
-        <option>Email Drafted</option>
-        <option>Email Sent</option>
-        <option>Follow-up Due</option>
-        <option>Replied</option>
-        <option>Meeting Booked</option>
-        <option>Proposal Sent</option>
-        <option>Negotiation</option>
-        <option>Won</option>
-        <option>Lost</option>
-      </select>
-      <select id="priorityFilter">
-        <option value="">All priorities</option>
-        <option>A</option>
-        <option>B</option>
-        <option>C</option>
-      </select>
-    </section>
-
-    <section class="layout">
-      <aside class="card company-list-panel">
-        <div class="panel-heading">
-          <div>
-            <h2>Manufacturers</h2>
-            <p id="companyCount">0 companies</p>
-          </div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-lockup">
+        <div class="brand-mark">CTP</div>
+        <div>
+          <strong>Caledonia</strong>
+          <span>Technical Partners</span>
         </div>
-        <div id="companyList" class="company-list"></div>
-      </aside>
+      </div>
 
-      <section class="card workspace">
-        <div id="emptyState" class="empty-state">
-          <div class="empty-icon">CTP</div>
-          <h2>Select a manufacturer</h2>
-          <p>Choose a company from the left, or add a new prospect to begin.</p>
+      <nav class="main-nav">
+        <button class="nav-item active" data-view="dashboard">Dashboard</button>
+        <button class="nav-item" data-view="companies">Companies</button>
+        <button class="nav-item" data-view="outreach">Outreach</button>
+        <button class="nav-item" data-view="proposals">Proposals</button>
+        <button class="nav-item" data-view="followups">Follow-ups</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="exportBtn" class="ghost full">Export data</button>
+        <label class="ghost full file-button">
+          Import data
+          <input type="file" id="importInput" accept="application/json" />
+        </label>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Edinburgh · Scotland</p>
+          <h1 id="pageTitle">Dashboard</h1>
         </div>
+        <div class="topbar-actions">
+          <input id="globalSearch" type="search" placeholder="Search companies or contacts…" />
+          <button id="newCompanyBtn" class="primary">+ New company</button>
+        </div>
+      </header>
 
-        <div id="workspaceContent" hidden>
-          <div class="workspace-header">
-            <div>
-              <span id="companyStageBadge" class="badge"></span>
-              <h1 id="workspaceCompanyName"></h1>
-              <a id="workspaceWebsite" target="_blank" rel="noreferrer"></a>
-            </div>
-            <div class="workspace-actions">
-              <button class="secondary" id="deleteCompanyBtn">Delete</button>
-              <button class="primary" id="saveCompanyBtn">Save</button>
-            </div>
-          </div>
-
-          <nav class="tabs" aria-label="CRM workspace tabs">
-            <button class="tab active" data-tab="profile">Company</button>
-            <button class="tab" data-tab="email">Email Studio</button>
-            <button class="tab" data-tab="proposal">Proposal Generator</button>
-            <button class="tab" data-tab="activity">Activity</button>
-          </nav>
-
-          <section class="tab-panel active" id="profilePanel">
-            <div class="form-grid">
-              <label>Company name<input id="companyName" /></label>
-              <label>Website<input id="website" type="url" placeholder="https://…" /></label>
-              <label>Country<input id="country" /></label>
-              <label>Product category<input id="category" /></label>
-              <label>Contact name<input id="contactName" /></label>
-              <label>Job title<input id="contactRole" /></label>
-              <label>Email<input id="contactEmail" type="email" /></label>
-              <label>LinkedIn<input id="linkedin" type="url" /></label>
-              <label>Priority
-                <select id="priority"><option>A</option><option>B</option><option>C</option></select>
-              </label>
-              <label>Pipeline stage
-                <select id="stage">
-                  <option>Research</option><option>Email Drafted</option><option>Email Sent</option>
-                  <option>Follow-up Due</option><option>Replied</option><option>Meeting Booked</option>
-                  <option>Proposal Sent</option><option>Negotiation</option><option>Won</option><option>Lost</option>
-                </select>
-              </label>
-              <label class="full">Why this company is a fit
-                <textarea id="fitReason" rows="3" placeholder="What makes the manufacturer relevant to Scotland?"></textarea>
-              </label>
-              <label class="full">Product / company notes
-                <textarea id="notes" rows="5"></textarea>
-              </label>
-            </div>
-          </section>
-
-          <section class="tab-panel" id="emailPanel">
-            <div class="split">
+      <section id="dashboardView" class="view active">
+        <div id="statsGrid" class="stats-grid"></div>
+        <div class="dashboard-grid">
+          <article class="panel">
+            <div class="panel-heading">
               <div>
-                <h3>Quick personalisation</h3>
-                <div class="form-grid single">
-                  <label>Specific product or capability
-                    <input id="emailProduct" placeholder="e.g. AI sports cameras" />
-                  </label>
-                  <label>Scottish opportunity
-                    <textarea id="emailOpportunity" rows="3" placeholder="e.g. grassroots football venues, universities and sports centres"></textarea>
-                  </label>
-                  <label>Call to action
-                    <select id="emailCTA">
-                      <option value="call">15-minute introductory call</option>
-                      <option value="reply">Reply by email</option>
-                      <option value="proposal">Review a short market proposal</option>
-                    </select>
-                  </label>
-                  <label>Email type
-                    <select id="emailType">
-                      <option value="intro">Initial introduction</option>
-                      <option value="follow1">Follow-up 1</option>
-                      <option value="follow2">Follow-up 2</option>
-                      <option value="proposal">Proposal follow-up</option>
-                    </select>
-                  </label>
+                <p class="eyebrow">Pipeline</p>
+                <h2>Priority prospects</h2>
+              </div>
+              <button class="text-button" data-go="companies">View all</button>
+            </div>
+            <div id="priorityProspects"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Action centre</p>
+                <h2>Follow-ups due</h2>
+              </div>
+              <button class="text-button" data-go="followups">Open queue</button>
+            </div>
+            <div id="followupPreview"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="companiesView" class="view">
+        <div class="workspace-grid">
+          <aside class="panel company-browser">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Manufacturers</p>
+                <h2>Company records</h2>
+              </div>
+              <button id="addCompanySmallBtn" class="icon-button">+</button>
+            </div>
+            <div class="filters">
+              <select id="companyStageFilter">
+                <option value="">All stages</option>
+                <option>Research</option>
+                <option>Draft ready</option>
+                <option>Email sent</option>
+                <option>Follow-up due</option>
+                <option>Replied</option>
+                <option>Meeting booked</option>
+                <option>Proposal sent</option>
+                <option>Negotiation</option>
+                <option>Won</option>
+                <option>Lost</option>
+              </select>
+              <select id="companyPriorityFilter">
+                <option value="">All priorities</option>
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+              </select>
+            </div>
+            <div id="companyList" class="record-list"></div>
+          </aside>
+
+          <section class="panel company-workspace">
+            <div id="companyEmpty" class="empty-state">
+              <div class="empty-mark">CTP</div>
+              <h2>Select a company</h2>
+              <p>Choose a manufacturer to view contacts, outreach, proposals and activity.</p>
+            </div>
+
+            <div id="companyContent" hidden>
+              <div class="company-header">
+                <div>
+                  <div class="badge-row">
+                    <span id="companyPriorityBadge" class="badge"></span>
+                    <span id="companyStageBadge" class="badge subtle"></span>
+                  </div>
+                  <h2 id="companyHeading"></h2>
+                  <a id="companyWebsiteLink" target="_blank" rel="noreferrer"></a>
                 </div>
                 <div class="button-row">
-                  <button class="primary" id="generateEmailBtn">Generate Email</button>
-                  <button class="secondary" id="markSentBtn">Mark as Sent</button>
+                  <button id="deleteCompanyBtn" class="danger-light">Delete</button>
+                  <button id="saveCompanyBtn" class="primary">Save changes</button>
                 </div>
               </div>
 
-              <div class="composer">
-                <label>Subject<input id="emailSubject" /></label>
-                <label>Message<textarea id="emailBody" rows="18"></textarea></label>
-                <div class="button-row wrap">
-                  <button class="secondary" id="copyEmailBtn">Copy Email</button>
-                  <button class="secondary" id="openGmailBtn">Open Gmail</button>
-                  <button class="secondary" id="openMailBtn">Open Mail App</button>
+              <nav class="tabs">
+                <button class="tab active" data-company-tab="overview">Overview</button>
+                <button class="tab" data-company-tab="contacts">Contacts</button>
+                <button class="tab" data-company-tab="outreach">Outreach</button>
+                <button class="tab" data-company-tab="proposal">Proposal</button>
+                <button class="tab" data-company-tab="activity">Activity</button>
+              </nav>
+
+              <div id="overviewTab" class="company-tab active">
+                <div class="form-grid">
+                  <label>Company name<input id="companyName" /></label>
+                  <label>Website<input id="companyWebsite" type="url" /></label>
+                  <label>Country<input id="companyCountry" /></label>
+                  <label>Product category<input id="companyCategory" /></label>
+                  <label>Priority
+                    <select id="companyPriority">
+                      <option>A</option><option>B</option><option>C</option>
+                    </select>
+                  </label>
+                  <label>Pipeline stage
+                    <select id="companyStage">
+                      <option>Research</option>
+                      <option>Draft ready</option>
+                      <option>Email sent</option>
+                      <option>Follow-up due</option>
+                      <option>Replied</option>
+                      <option>Meeting booked</option>
+                      <option>Proposal sent</option>
+                      <option>Negotiation</option>
+                      <option>Won</option>
+                      <option>Lost</option>
+                    </select>
+                  </label>
+                  <label class="full">Scottish opportunity
+                    <textarea id="companyOpportunity" rows="4"></textarea>
+                  </label>
+                  <label class="full">Internal notes
+                    <textarea id="companyNotes" rows="5"></textarea>
+                  </label>
                 </div>
-                <p class="hint">Gmail opens a pre-filled compose window. Review before sending.</p>
+              </div>
+
+              <div id="contactsTab" class="company-tab">
+                <div class="panel-heading no-padding">
+                  <div>
+                    <p class="eyebrow">Contact directory</p>
+                    <h3>People at this company</h3>
+                  </div>
+                  <button id="addContactBtn" class="secondary">+ Add contact</button>
+                </div>
+                <div id="contactCards" class="contact-grid"></div>
+              </div>
+
+              <div id="outreachTab" class="company-tab">
+                <div class="outreach-layout">
+                  <div>
+                    <p class="eyebrow">Automatic recipient</p>
+                    <div id="activeContactCard" class="selected-contact"></div>
+
+                    <div class="form-grid single">
+                      <label>Email template
+                        <select id="emailTemplate">
+                          <option value="intro">Initial representation approach</option>
+                          <option value="follow1">Follow-up after no reply</option>
+                          <option value="follow2">Final follow-up</option>
+                          <option value="proposal">Proposal follow-up</option>
+                        </select>
+                      </label>
+                      <label>Specific product / capability
+                        <input id="emailProduct" />
+                      </label>
+                      <label>Market opportunity
+                        <textarea id="emailOpportunity" rows="4"></textarea>
+                      </label>
+                    </div>
+
+                    <div class="button-row">
+                      <button id="generateEmailBtn" class="primary">Generate email</button>
+                      <button id="switchContactBtn" class="secondary">Choose another contact</button>
+                    </div>
+                  </div>
+
+                  <div class="composer">
+                    <label>To<input id="emailTo" type="email" /></label>
+                    <label>Subject<input id="emailSubject" /></label>
+                    <label>Message<textarea id="emailBody" rows="18"></textarea></label>
+                    <div class="button-row wrap">
+                      <button id="copyEmailBtn" class="secondary">Copy</button>
+                      <button id="openGmailBtn" class="primary">Open Gmail draft</button>
+                      <button id="markSentBtn" class="secondary">Mark sent</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="proposalTab" class="company-tab">
+                <div class="proposal-toolbar">
+                  <div class="form-grid">
+                    <label>Territory<input id="proposalTerritory" value="Scotland" /></label>
+                    <label>Commercial model
+                      <select id="proposalModel">
+                        <option>Commission-based sales representation</option>
+                        <option>Monthly retainer plus commission</option>
+                        <option>Market-entry pilot</option>
+                        <option>Non-exclusive distribution</option>
+                        <option>Exclusive territory representation</option>
+                      </select>
+                    </label>
+                    <label>Commercial terms<input id="proposalTerms" placeholder="e.g. 10% commission on net sales" /></label>
+                    <label>Validity<input id="proposalValidity" value="30 days" /></label>
+                    <label class="full">Target sectors<input id="proposalSectors" /></label>
+                  </div>
+                  <div class="button-row">
+                    <button id="generateProposalBtn" class="primary">Generate proposal</button>
+                    <button id="printProposalBtn" class="secondary">Save as PDF</button>
+                  </div>
+                </div>
+                <article id="proposalPreview" class="proposal-preview"></article>
+              </div>
+
+              <div id="activityTab" class="company-tab">
+                <div class="activity-entry">
+                  <input id="activityInput" placeholder="Add a note, call outcome or next step…" />
+                  <button id="addActivityBtn" class="primary">Add activity</button>
+                </div>
+                <div id="activityList"></div>
               </div>
             </div>
-          </section>
-
-          <section class="tab-panel" id="proposalPanel">
-            <div class="proposal-controls">
-              <div class="form-grid">
-                <label>Territory
-                  <input id="proposalTerritory" value="Scotland" />
-                </label>
-                <label>Commercial model
-                  <select id="commercialModel">
-                    <option>Commission-based sales representation</option>
-                    <option>Monthly retainer plus commission</option>
-                    <option>Non-exclusive distribution partnership</option>
-                    <option>Exclusive territory representation</option>
-                    <option>Market-entry pilot</option>
-                  </select>
-                </label>
-                <label>Commission / terms
-                  <input id="commercialTerms" placeholder="e.g. 10% commission on net sales" />
-                </label>
-                <label>Proposal validity
-                  <input id="proposalValidity" value="30 days" />
-                </label>
-                <label class="full">Target sectors
-                  <input id="targetSectors" placeholder="e.g. sport, education, local authorities, leisure centres" />
-                </label>
-                <label class="full">Proposed services
-                  <textarea id="proposalServices" rows="4">Local sales representation
-Qualified lead generation
-Customer and partner meetings
-Product demonstrations
-Market feedback and reporting
-Ongoing opportunity management</textarea>
-                </label>
-              </div>
-              <div class="button-row">
-                <button class="primary" id="generateProposalBtn">Generate Proposal</button>
-                <button class="secondary" id="printProposalBtn">Save / Print PDF</button>
-              </div>
-            </div>
-
-            <article id="proposalPreview" class="proposal-preview"></article>
-          </section>
-
-          <section class="tab-panel" id="activityPanel">
-            <div class="activity-entry">
-              <input id="activityNote" placeholder="Add a note, call outcome or next step…" />
-              <button class="primary" id="addActivityBtn">Add Activity</button>
-            </div>
-            <div id="activityList" class="activity-list"></div>
           </section>
         </div>
       </section>
-    </section>
-  </main>
+
+      <section id="outreachView" class="view">
+        <article class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Fast workflow</p>
+              <h2>Bulk outreach queue</h2>
+            </div>
+            <div class="button-row">
+              <button id="selectAllOutreachBtn" class="secondary">Select all</button>
+              <button id="generateBulkBtn" class="primary">Generate selected drafts</button>
+            </div>
+          </div>
+          <p class="muted">Select companies with a primary contact. Drafts are generated locally and can be opened one-by-one in Gmail.</p>
+          <div id="bulkQueue"></div>
+        </article>
+      </section>
+
+      <section id="proposalsView" class="view">
+        <article class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Proposal vault</p>
+              <h2>Generated proposals</h2>
+            </div>
+          </div>
+          <div id="proposalVault"></div>
+        </article>
+      </section>
+
+      <section id="followupsView" class="view">
+        <article class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Due now</p>
+              <h2>Follow-up queue</h2>
+            </div>
+          </div>
+          <div id="followupQueue"></div>
+        </article>
+      </section>
+    </main>
+  </div>
 
   <dialog id="companyDialog">
     <form method="dialog" id="companyDialogForm">
-      <h2>Add manufacturer</h2>
+      <h2>Add company</h2>
       <label>Company name<input id="newCompanyName" required /></label>
-      <label>Website<input id="newCompanyWebsite" type="url" placeholder="https://…" /></label>
-      <label>Contact email<input id="newCompanyEmail" type="email" /></label>
+      <label>Website<input id="newCompanyWebsite" type="url" /></label>
+      <label>Country<input id="newCompanyCountry" /></label>
+      <label>Product category<input id="newCompanyCategory" /></label>
       <div class="button-row end">
         <button value="cancel" class="secondary">Cancel</button>
-        <button value="default" id="createCompanyBtn" class="primary">Create</button>
+        <button id="createCompanyBtn" value="default" class="primary">Create company</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="contactDialog">
+    <form method="dialog" id="contactDialogForm">
+      <h2 id="contactDialogTitle">Add contact</h2>
+      <input id="contactEditingId" type="hidden" />
+      <label>Name<input id="contactNameInput" required /></label>
+      <label>Job title<input id="contactRoleInput" /></label>
+      <label>Email<input id="contactEmailInput" type="email" /></label>
+      <label>LinkedIn<input id="contactLinkedinInput" type="url" /></label>
+      <label class="checkbox-label">
+        <input id="contactPrimaryInput" type="checkbox" />
+        Set as primary contact
+      </label>
+      <div class="button-row end">
+        <button value="cancel" class="secondary">Cancel</button>
+        <button id="saveContactBtn" value="default" class="primary">Save contact</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="chooseContactDialog">
+    <form method="dialog">
+      <h2>Choose contact</h2>
+      <div id="contactChooser"></div>
+      <div class="button-row end">
+        <button value="cancel" class="secondary">Close</button>
       </div>
     </form>
   </dialog>

@@ -1,42 +1,78 @@
-# Edinburgh Distribution OS V5
+# Caledonia Technical Partners CRM — Next Version
 
-A polished GitHub Pages-compatible business operating system for Scottish technical sales representation.
+A static, GitHub Pages-ready manufacturer partnership CRM.
 
-## Included
+## What changed
 
-- Command Centre with live KPIs
-- Readiness score
-- Drag-and-drop ten-stage deal pipeline
-- Weighted commission forecasting in GBP
-- Manufacturer Intelligence profiles
-- Outreach composer with editable templates
-- Outreach history and response stages
-- Contacts directory
-- Proposal Studio with Print / Save as PDF
-- Tasks and follow-ups
-- Document Vault records
-- Analytics and Scottish opportunity map
-- Global search
-- Dark mode
-- Local backup and restore
-- Mobile support
+This version removes the awkward manufacturer dropdown workflow.
 
-## Install on GitHub Pages
+The CRM is now centred around company records:
 
-Replace these five files in the repository root:
+1. Open a company.
+2. Add one or more contacts.
+3. Mark one contact as primary.
+4. Generate an email using that contact automatically.
+5. Open the message as a pre-filled Gmail draft.
+6. Mark the email as sent.
+7. The CRM schedules a follow-up five days later.
+8. Generate a branded proposal from the same company record.
 
-- index.html
-- styles.css
-- app.js
-- manifest.json
-- README.md
+## Features
 
-Commit the changes, wait for GitHub Pages to deploy, then open:
+- Company-centred workspace
+- Multiple contacts per company
+- Primary-contact selection
+- Automatic recipient selection
+- Personalised initial and follow-up emails
+- One-click Gmail compose
+- Bulk draft generation
+- Follow-up queue
+- Proposal generator
+- Save proposal as PDF
+- Proposal vault
+- Pipeline dashboard
+- Activity timeline
+- JSON backup and restore
+- Responsive design
+- GitHub Pages compatible
+- Local browser storage
 
-https://dexterelliot-code.github.io/edinburgh-distribution-crm/index.html?v=5
+## Deploy to GitHub Pages
 
-Use Ctrl + Shift + R if your browser shows an older version.
+### Replace the existing repository
 
-## Data
+1. Download and unzip this package.
+2. Back up your current repository.
+3. Copy these files into the repository root:
+   - `index.html`
+   - `styles.css`
+   - `app.js`
+   - `manifest.webmanifest`
+   - `assets/favicon.svg`
+4. Commit and push.
+5. Open GitHub repository **Settings → Pages**.
+6. Select **Deploy from a branch**.
+7. Choose the `main` branch and `/root`.
+8. Save.
 
-Data is stored in the browser using localStorage. Export backups regularly, particularly before replacing website files or moving to another device.
+GitHub Pages will rebuild the site.
+
+## Important data note
+
+Records are stored in `localStorage`, which means they belong to the browser and device where the CRM is used.
+
+Use **Export data** regularly. Import the JSON backup to move records to another browser or device.
+
+## Email safety
+
+The CRM does not send emails automatically. It opens a pre-filled Gmail compose window so every message can be reviewed before sending.
+
+Automatic sending would require Gmail OAuth, a secure backend, account permissions and additional security controls.
+
+## Editing templates
+
+Edit the `emailDraft()` function in `app.js`.
+
+## Editing the proposal
+
+Edit the `proposalHtml()` function in `app.js`.
