@@ -1,252 +1,237 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0f172a">
-  <title>Edinburgh Distribution OS V5</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Caledonia Technical Partners CRM</title>
+  <meta name="description" content="Manufacturer outreach, email and proposal CRM for Caledonia Technical Partners." />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app-shell">
-    <aside id="sidebar" class="sidebar">
-      <div class="brand">
-        <div class="brand-mark">ED</div>
-        <div>
-          <strong>Edinburgh Distribution</strong>
-          <span>Scottish Market Development</span>
-        </div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="mark">CTP</div>
+      <div>
+        <strong>Caledonia</strong>
+        <span>Technical Partners</span>
       </div>
+    </div>
+    <div class="top-actions">
+      <button class="secondary" id="exportDataBtn">Export Data</button>
+      <label class="secondary file-label">
+        Import Data
+        <input id="importDataInput" type="file" accept="application/json" />
+      </label>
+      <button class="primary" id="newCompanyBtn">+ New Company</button>
+    </div>
+  </header>
 
-      <nav id="nav" class="nav">
-        <button class="nav-item active" data-view="dashboard"><span>◫</span>Command Centre</button>
-        <button class="nav-item" data-view="pipeline"><span>⇢</span>Deal Pipeline</button>
-        <button class="nav-item" data-view="manufacturers"><span>⌂</span>Manufacturer Intelligence</button>
-        <button class="nav-item" data-view="outreach"><span>✉</span>Outreach Centre</button>
-        <button class="nav-item" data-view="contacts"><span>◎</span>Contacts</button>
-        <button class="nav-item" data-view="proposals"><span>▤</span>Proposal Studio</button>
-        <button class="nav-item" data-view="tasks"><span>✓</span>Tasks & Follow-ups</button>
-        <button class="nav-item" data-view="documents"><span>◇</span>Document Vault</button>
-        <button class="nav-item" data-view="analytics"><span>⌁</span>Analytics</button>
-        <button class="nav-item" data-view="settings"><span>⚙</span>Settings</button>
-      </nav>
+  <main class="shell">
+    <section class="stats" id="stats"></section>
 
-      <div class="sidebar-footer">
-        <div class="profile-chip">
-          <div class="avatar">DK</div>
-          <div><strong>Dylan Keddie</strong><span>Edinburgh, Scotland</span></div>
-        </div>
-        <button id="themeBtn" class="secondary dark-action">Toggle dark mode</button>
+    <section class="toolbar card">
+      <div class="search-wrap">
+        <input id="searchInput" type="search" placeholder="Search manufacturers, contacts, categories…" />
       </div>
-    </aside>
+      <select id="statusFilter">
+        <option value="">All stages</option>
+        <option>Research</option>
+        <option>Email Drafted</option>
+        <option>Email Sent</option>
+        <option>Follow-up Due</option>
+        <option>Replied</option>
+        <option>Meeting Booked</option>
+        <option>Proposal Sent</option>
+        <option>Negotiation</option>
+        <option>Won</option>
+        <option>Lost</option>
+      </select>
+      <select id="priorityFilter">
+        <option value="">All priorities</option>
+        <option>A</option>
+        <option>B</option>
+        <option>C</option>
+      </select>
+    </section>
 
-    <main class="main">
-      <header class="topbar">
-        <button id="menuBtn" class="icon-btn mobile-only">☰</button>
-        <div>
-          <div class="eyebrow">EDINBURGH • SCOTLAND</div>
-          <h1 id="pageTitle">Command Centre</h1>
+    <section class="layout">
+      <aside class="card company-list-panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Manufacturers</h2>
+            <p id="companyCount">0 companies</p>
+          </div>
         </div>
-        <div class="top-actions">
-          <button id="globalSearchBtn" class="secondary">Search</button>
-          <button id="newRecordBtn" class="primary">+ New record</button>
-        </div>
-      </header>
+        <div id="companyList" class="company-list"></div>
+      </aside>
 
-      <section class="workspace">
-        <section id="view-dashboard" class="view active">
-          <div class="hero">
+      <section class="card workspace">
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon">CTP</div>
+          <h2>Select a manufacturer</h2>
+          <p>Choose a company from the left, or add a new prospect to begin.</p>
+        </div>
+
+        <div id="workspaceContent" hidden>
+          <div class="workspace-header">
             <div>
-              <div class="eyebrow">SCOTTISH MARKET DEVELOPMENT</div>
-              <h2>Build the pipeline. Win the territory.</h2>
-              <p>Track manufacturers, outreach, proposals and projected commission in one operating system.</p>
+              <span id="companyStageBadge" class="badge"></span>
+              <h1 id="workspaceCompanyName"></h1>
+              <a id="workspaceWebsite" target="_blank" rel="noreferrer"></a>
             </div>
-            <div class="readiness-card">
-              <span>Business readiness</span>
-              <strong id="readinessValue">0%</strong>
-              <div class="progress"><i id="readinessBar"></i></div>
-              <small id="readinessText">Add records to build momentum</small>
+            <div class="workspace-actions">
+              <button class="secondary" id="deleteCompanyBtn">Delete</button>
+              <button class="primary" id="saveCompanyBtn">Save</button>
             </div>
           </div>
 
-          <div id="kpis" class="kpi-grid"></div>
+          <nav class="tabs" aria-label="CRM workspace tabs">
+            <button class="tab active" data-tab="profile">Company</button>
+            <button class="tab" data-tab="email">Email Studio</button>
+            <button class="tab" data-tab="proposal">Proposal Generator</button>
+            <button class="tab" data-tab="activity">Activity</button>
+          </nav>
 
-          <div class="dashboard-grid">
-            <article class="panel">
-              <div class="panel-head"><div><div class="eyebrow">PIPELINE</div><h3>Value by stage</h3></div><button class="link-btn" data-jump="pipeline">Open pipeline →</button></div>
-              <div id="pipelineChart" class="bar-chart"></div>
-            </article>
-            <article class="panel">
-              <div class="panel-head"><div><div class="eyebrow">PRIORITIES</div><h3>Next actions</h3></div></div>
-              <div id="nextActions" class="stack"></div>
-            </article>
-            <article class="panel">
-              <div class="panel-head"><div><div class="eyebrow">OUTREACH</div><h3>Conversion funnel</h3></div></div>
-              <div id="funnelChart" class="funnel"></div>
-            </article>
-            <article class="panel">
-              <div class="panel-head"><div><div class="eyebrow">OPPORTUNITIES</div><h3>Highest-value manufacturers</h3></div><button class="link-btn" data-jump="manufacturers">View intelligence →</button></div>
-              <div id="topManufacturers" class="stack"></div>
-            </article>
-            <article class="panel span-two">
-              <div class="panel-head"><div><div class="eyebrow">RECENT</div><h3>Activity timeline</h3></div></div>
-              <div id="recentActivity" class="timeline"></div>
-            </article>
-          </div>
-        </section>
+          <section class="tab-panel active" id="profilePanel">
+            <div class="form-grid">
+              <label>Company name<input id="companyName" /></label>
+              <label>Website<input id="website" type="url" placeholder="https://…" /></label>
+              <label>Country<input id="country" /></label>
+              <label>Product category<input id="category" /></label>
+              <label>Contact name<input id="contactName" /></label>
+              <label>Job title<input id="contactRole" /></label>
+              <label>Email<input id="contactEmail" type="email" /></label>
+              <label>LinkedIn<input id="linkedin" type="url" /></label>
+              <label>Priority
+                <select id="priority"><option>A</option><option>B</option><option>C</option></select>
+              </label>
+              <label>Pipeline stage
+                <select id="stage">
+                  <option>Research</option><option>Email Drafted</option><option>Email Sent</option>
+                  <option>Follow-up Due</option><option>Replied</option><option>Meeting Booked</option>
+                  <option>Proposal Sent</option><option>Negotiation</option><option>Won</option><option>Lost</option>
+                </select>
+              </label>
+              <label class="full">Why this company is a fit
+                <textarea id="fitReason" rows="3" placeholder="What makes the manufacturer relevant to Scotland?"></textarea>
+              </label>
+              <label class="full">Product / company notes
+                <textarea id="notes" rows="5"></textarea>
+              </label>
+            </div>
+          </section>
 
-        <section id="view-pipeline" class="view">
-          <div class="section-toolbar">
-            <input id="pipelineSearch" type="search" placeholder="Search deals, companies or countries…">
-            <select id="pipelineFilter"><option value="">All priorities</option><option>High</option><option>Medium</option><option>Low</option></select>
-          </div>
-          <div id="kanban" class="kanban"></div>
-        </section>
+          <section class="tab-panel" id="emailPanel">
+            <div class="split">
+              <div>
+                <h3>Quick personalisation</h3>
+                <div class="form-grid single">
+                  <label>Specific product or capability
+                    <input id="emailProduct" placeholder="e.g. AI sports cameras" />
+                  </label>
+                  <label>Scottish opportunity
+                    <textarea id="emailOpportunity" rows="3" placeholder="e.g. grassroots football venues, universities and sports centres"></textarea>
+                  </label>
+                  <label>Call to action
+                    <select id="emailCTA">
+                      <option value="call">15-minute introductory call</option>
+                      <option value="reply">Reply by email</option>
+                      <option value="proposal">Review a short market proposal</option>
+                    </select>
+                  </label>
+                  <label>Email type
+                    <select id="emailType">
+                      <option value="intro">Initial introduction</option>
+                      <option value="follow1">Follow-up 1</option>
+                      <option value="follow2">Follow-up 2</option>
+                      <option value="proposal">Proposal follow-up</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="button-row">
+                  <button class="primary" id="generateEmailBtn">Generate Email</button>
+                  <button class="secondary" id="markSentBtn">Mark as Sent</button>
+                </div>
+              </div>
 
-        <section id="view-manufacturers" class="view">
-          <div class="section-toolbar">
-            <input id="manufacturerSearch" type="search" placeholder="Search manufacturers, products, countries or notes…">
-            <select id="manufacturerFilter"><option value="">All statuses</option><option>Priority target</option><option>Warm target</option><option>Researching</option><option>Contacted</option></select>
-            <button id="addManufacturerBtn" class="primary">Add manufacturer</button>
-          </div>
-          <div id="manufacturerGrid" class="card-grid"></div>
-        </section>
+              <div class="composer">
+                <label>Subject<input id="emailSubject" /></label>
+                <label>Message<textarea id="emailBody" rows="18"></textarea></label>
+                <div class="button-row wrap">
+                  <button class="secondary" id="copyEmailBtn">Copy Email</button>
+                  <button class="secondary" id="openGmailBtn">Open Gmail</button>
+                  <button class="secondary" id="openMailBtn">Open Mail App</button>
+                </div>
+                <p class="hint">Gmail opens a pre-filled compose window. Review before sending.</p>
+              </div>
+            </div>
+          </section>
 
-        <section id="view-outreach" class="view">
-          <div class="outreach-layout">
-            <aside class="panel template-panel">
-              <div class="panel-head"><div><div class="eyebrow">LIBRARY</div><h3>Email templates</h3></div><button id="addTemplateBtn" class="icon-btn">+</button></div>
-              <div id="templateList" class="template-list"></div>
-            </aside>
-            <article class="panel">
-              <div class="panel-head"><div><div class="eyebrow">WORKSPACE</div><h3>Outreach composer</h3></div></div>
+          <section class="tab-panel" id="proposalPanel">
+            <div class="proposal-controls">
               <div class="form-grid">
-                <label>Manufacturer<select id="composeManufacturer"></select></label>
-                <label>Contact<select id="composeContact"></select></label>
-                <label class="full">Subject<input id="composeSubject"></label>
-                <label class="full">Message<textarea id="composeBody" rows="16"></textarea></label>
+                <label>Territory
+                  <input id="proposalTerritory" value="Scotland" />
+                </label>
+                <label>Commercial model
+                  <select id="commercialModel">
+                    <option>Commission-based sales representation</option>
+                    <option>Monthly retainer plus commission</option>
+                    <option>Non-exclusive distribution partnership</option>
+                    <option>Exclusive territory representation</option>
+                    <option>Market-entry pilot</option>
+                  </select>
+                </label>
+                <label>Commission / terms
+                  <input id="commercialTerms" placeholder="e.g. 10% commission on net sales" />
+                </label>
+                <label>Proposal validity
+                  <input id="proposalValidity" value="30 days" />
+                </label>
+                <label class="full">Target sectors
+                  <input id="targetSectors" placeholder="e.g. sport, education, local authorities, leisure centres" />
+                </label>
+                <label class="full">Proposed services
+                  <textarea id="proposalServices" rows="4">Local sales representation
+Qualified lead generation
+Customer and partner meetings
+Product demonstrations
+Market feedback and reporting
+Ongoing opportunity management</textarea>
+                </label>
               </div>
               <div class="button-row">
-                <button id="copyEmailBtn" class="secondary">Copy email</button>
-                <button id="logEmailBtn" class="primary">Log as sent</button>
+                <button class="primary" id="generateProposalBtn">Generate Proposal</button>
+                <button class="secondary" id="printProposalBtn">Save / Print PDF</button>
               </div>
-            </article>
-          </div>
-          <article class="panel outreach-history">
-            <div class="panel-head"><div><div class="eyebrow">HISTORY</div><h3>Outreach activity</h3></div></div>
-            <div id="outreachTable" class="table-wrap"></div>
-          </article>
-        </section>
+            </div>
 
-        <section id="view-contacts" class="view">
-          <div class="section-toolbar">
-            <input id="contactSearch" type="search" placeholder="Search contacts…">
-            <button id="addContactBtn" class="primary">Add contact</button>
-          </div>
-          <div id="contactsTable" class="panel table-wrap"></div>
-        </section>
+            <article id="proposalPreview" class="proposal-preview"></article>
+          </section>
 
-        <section id="view-proposals" class="view">
-          <div class="proposal-layout">
-            <aside class="panel">
-              <div class="panel-head"><div><div class="eyebrow">BUILDER</div><h3>Proposal controls</h3></div></div>
-              <div class="form-grid one-col">
-                <label>Manufacturer<select id="proposalManufacturer"></select></label>
-                <label>Territory<input id="proposalTerritory" value="Scotland"></label>
-                <label>Commission model<input id="proposalCommission" value="Commission-based agency agreement"></label>
-                <label>Trial period<input id="proposalTrial" value="90-day market development trial"></label>
-                <label>Primary opportunity<textarea id="proposalOpportunity" rows="4"></textarea></label>
-              </div>
-              <div class="button-stack">
-                <button id="refreshProposalBtn" class="secondary">Refresh preview</button>
-                <button id="printProposalBtn" class="primary">Print / Save as PDF</button>
-              </div>
-            </aside>
-            <article id="proposalPreview" class="proposal-paper"></article>
-          </div>
-        </section>
-
-        <section id="view-tasks" class="view">
-          <div class="section-toolbar">
-            <input id="taskSearch" type="search" placeholder="Search tasks…">
-            <select id="taskFilter"><option value="">All tasks</option><option value="open">Open</option><option value="done">Completed</option></select>
-            <button id="addTaskBtn" class="primary">Add task</button>
-          </div>
-          <div id="taskBoard" class="task-board"></div>
-        </section>
-
-        <section id="view-documents" class="view">
-          <div class="section-toolbar">
-            <input id="documentSearch" type="search" placeholder="Search documents…">
-            <button id="addDocumentBtn" class="primary">Add document record</button>
-          </div>
-          <div id="documentGrid" class="card-grid"></div>
-        </section>
-
-        <section id="view-analytics" class="view">
-          <div id="analyticsKpis" class="kpi-grid"></div>
-          <div class="analytics-grid">
-            <article class="panel"><div class="panel-head"><div><div class="eyebrow">FORECAST</div><h3>Weighted commission</h3></div></div><div id="weightedChart" class="bar-chart large"></div></article>
-            <article class="panel"><div class="panel-head"><div><div class="eyebrow">RESPONSE</div><h3>Outreach performance</h3></div></div><div id="responseChart" class="donut-wrap"></div></article>
-            <article class="panel span-two"><div class="panel-head"><div><div class="eyebrow">TERRITORY</div><h3>Scottish opportunity map</h3></div></div><div id="territoryMap" class="territory-map"></div></article>
-          </div>
-        </section>
-
-        <section id="view-settings" class="view">
-          <div class="settings-grid">
-            <article class="panel">
-              <div class="panel-head"><div><div class="eyebrow">BUSINESS</div><h3>Profile</h3></div></div>
-              <div class="form-grid one-col">
-                <label>Business name<input id="businessName"></label>
-                <label>Your name<input id="ownerName"></label>
-                <label>Location<input id="businessLocation"></label>
-                <label>Email<input id="businessEmail"></label>
-                <label>Phone<input id="businessPhone"></label>
-              </div>
-              <button id="saveProfileBtn" class="primary">Save profile</button>
-            </article>
-            <article class="panel">
-              <div class="panel-head"><div><div class="eyebrow">DATA</div><h3>Backup & restore</h3></div></div>
-              <p class="muted">V5 stores data locally in this browser. Export a backup before replacing files or changing devices.</p>
-              <div class="button-stack">
-                <button id="exportBtn" class="secondary">Export backup</button>
-                <label class="secondary file-label">Import backup<input id="importInput" type="file" accept=".json" hidden></label>
-                <button id="resetBtn" class="danger">Reset starter data</button>
-                <button id="clearBtn" class="danger outline">Clear all data</button>
-              </div>
-            </article>
-            <article class="panel span-two">
-              <div class="panel-head"><div><div class="eyebrow">VERSION</div><h3>Edinburgh Distribution OS V5</h3></div></div>
-              <p class="muted">A GitHub Pages-compatible operating system built with plain HTML, CSS and JavaScript. No React, build tools or external libraries required.</p>
-            </article>
-          </div>
-        </section>
+          <section class="tab-panel" id="activityPanel">
+            <div class="activity-entry">
+              <input id="activityNote" placeholder="Add a note, call outcome or next step…" />
+              <button class="primary" id="addActivityBtn">Add Activity</button>
+            </div>
+            <div id="activityList" class="activity-list"></div>
+          </section>
+        </div>
       </section>
-    </main>
-  </div>
+    </section>
+  </main>
 
-  <dialog id="recordDialog">
-    <form id="recordForm" class="modal">
-      <div class="modal-head">
-        <div><div class="eyebrow">RECORD</div><h3 id="modalTitle">Add record</h3></div>
-        <button id="closeModalBtn" type="button" class="icon-btn">×</button>
-      </div>
-      <div id="modalFields" class="form-grid"></div>
-      <div class="modal-actions">
-        <button id="deleteRecordBtn" type="button" class="danger hidden">Delete</button>
-        <button id="cancelModalBtn" type="button" class="secondary">Cancel</button>
-        <button type="submit" class="primary">Save record</button>
+  <dialog id="companyDialog">
+    <form method="dialog" id="companyDialogForm">
+      <h2>Add manufacturer</h2>
+      <label>Company name<input id="newCompanyName" required /></label>
+      <label>Website<input id="newCompanyWebsite" type="url" placeholder="https://…" /></label>
+      <label>Contact email<input id="newCompanyEmail" type="email" /></label>
+      <div class="button-row end">
+        <button value="cancel" class="secondary">Cancel</button>
+        <button value="default" id="createCompanyBtn" class="primary">Create</button>
       </div>
     </form>
-  </dialog>
-
-  <dialog id="searchDialog">
-    <div class="modal">
-      <div class="modal-head"><div><div class="eyebrow">GLOBAL SEARCH</div><h3>Find anything</h3></div><button id="closeSearchBtn" class="icon-btn">×</button></div>
-      <input id="globalSearchInput" class="search-large" type="search" placeholder="Search manufacturers, deals, contacts, tasks and documents…">
-      <div id="globalSearchResults" class="stack search-results"></div>
-    </div>
   </dialog>
 
   <script src="app.js"></script>
