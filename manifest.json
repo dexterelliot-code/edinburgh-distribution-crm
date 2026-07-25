@@ -1,9 +1,0 @@
-{
-  "name": "Edinburgh Distribution OS V5",
-  "short_name": "ED OS V5",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#f4f7fb",
-  "theme_color": "#0f172a",
-  "description": "A premium Scottish technical sales and distribution operating system."
-}
