@@ -1,78 +1,35 @@
-# Caledonia Technical Partners CRM — Next Version
+# Caledonia Technical Partners CRM — Fixed v3
 
-A static, GitHub Pages-ready manufacturer partnership CRM.
+This build uses versioned asset filenames to prevent GitHub Pages or the browser
+from combining the new HTML with an older cached CSS or JavaScript file.
 
-## What changed
+## Upload these files to the repository root
 
-This version removes the awkward manufacturer dropdown workflow.
+- index.html
+- ctp-crm-v3.css
+- ctp-crm-v3.js
+- manifest.webmanifest
+- assets/favicon.svg
+- README.md
 
-The CRM is now centred around company records:
+## Remove these old files
 
-1. Open a company.
-2. Add one or more contacts.
-3. Mark one contact as primary.
-4. Generate an email using that contact automatically.
-5. Open the message as a pre-filled Gmail draft.
-6. Mark the email as sent.
-7. The CRM schedules a follow-up five days later.
-8. Generate a branded proposal from the same company record.
+Delete these from the repository before or after uploading:
 
-## Features
+- styles.css
+- app.js
+- manifest.json
 
-- Company-centred workspace
-- Multiple contacts per company
-- Primary-contact selection
-- Automatic recipient selection
-- Personalised initial and follow-up emails
-- One-click Gmail compose
-- Bulk draft generation
-- Follow-up queue
-- Proposal generator
-- Save proposal as PDF
-- Proposal vault
-- Pipeline dashboard
-- Activity timeline
-- JSON backup and restore
-- Responsive design
-- GitHub Pages compatible
-- Local browser storage
+Keeping manifest.webmanifest is correct.
 
-## Deploy to GitHub Pages
+## Deployment
 
-### Replace the existing repository
+1. Delete the old files listed above.
+2. Upload all files and the assets folder from this package.
+3. Commit the changes.
+4. Wait about 1–3 minutes for GitHub Pages.
+5. Open the live website in a private/incognito window.
+6. If needed, use Ctrl+Shift+R for a hard refresh.
 
-1. Download and unzip this package.
-2. Back up your current repository.
-3. Copy these files into the repository root:
-   - `index.html`
-   - `styles.css`
-   - `app.js`
-   - `manifest.webmanifest`
-   - `assets/favicon.svg`
-4. Commit and push.
-5. Open GitHub repository **Settings → Pages**.
-6. Select **Deploy from a branch**.
-7. Choose the `main` branch and `/root`.
-8. Save.
-
-GitHub Pages will rebuild the site.
-
-## Important data note
-
-Records are stored in `localStorage`, which means they belong to the browser and device where the CRM is used.
-
-Use **Export data** regularly. Import the JSON backup to move records to another browser or device.
-
-## Email safety
-
-The CRM does not send emails automatically. It opens a pre-filled Gmail compose window so every message can be reviewed before sending.
-
-Automatic sending would require Gmail OAuth, a secure backend, account permissions and additional security controls.
-
-## Editing templates
-
-Edit the `emailDraft()` function in `app.js`.
-
-## Editing the proposal
-
-Edit the `proposalHtml()` function in `app.js`.
+Your existing CRM data may still exist in localStorage under the previous build.
+Use the previous version's Export Data feature first if you need to preserve it.
